@@ -14,7 +14,7 @@ const statusMapping = [
   { status: 'Alles schlecht', codes: [500, 502, 503] },
 ];
 
-const standards = {
+const normals = {
   temperature: { min: 20, max: 25 },
   humidity: { min: 30, max: 60 },
   co2: { max: 1000 },
@@ -36,8 +36,8 @@ function generateStatusText(statusCode: number) {
   return status ? status.status : 'unknown';
 }
 
-function calcNormals(value: number, type: keyof typeof standards) {
-  const normal = standards[type];
+function calcNormals(value: number, type: keyof typeof normals) {
+  const normal = normals[type];
 
   if (normal.min !== undefined && value < normal.min) {
     return 'text-blue-500';
@@ -48,8 +48,8 @@ function calcNormals(value: number, type: keyof typeof standards) {
   return 'text-black';
 }
 
-function calcNormalRangeText(type: keyof typeof standards) {
-  const normal = standards[type];
+function calcNormalRangeText(type: keyof typeof normals) {
+  const normal = normals[type];
   if (normal.min !== undefined && normal.max !== undefined) {
     return `${normal.min} - ${normal.max}`;
   } else if (normal.min !== undefined) {
@@ -124,12 +124,12 @@ const chartOptions = ref({
     </div>
 
     <div class="mt-4 grid grid-cols-3 gap-4">
-      <div class="bg-gray-300 p-4 shadow-md rounded-md flex flex-col justify-center items-center min-h-80 max-h-80">
+      <div class="bg-gray-300 shadow-md rounded-md flex flex-col justify-center items-center">
         <p class="mb-2 text-center">Temperatur in den letzten 24 h</p>
         <Chart type="line" :data="chartData" :options="chartOptions" class="h-30rem" />
       </div>
-      <div class="bg-gray-300 p-4 shadow-md rounded-md flex items-center justify-center min-h-80">Luftfeuchtigkeit in den letzten 24 h</div>
-      <div class="bg-gray-300 p-4 shadow-md rounded-md flex items-center justify-center min-h-80">CO2 Level in den letzten 24 h</div>
+      <div class="bg-gray-300 p-4 shadow-md rounded-md flex items-center justify-center">Luftfeuchtigkeit in den letzten 24 h</div>
+      <div class="bg-gray-300 p-4 shadow-md rounded-md flex items-center justify-center">CO2 Level in den letzten 24 h</div>
     </div>
   </div>
 </template>
