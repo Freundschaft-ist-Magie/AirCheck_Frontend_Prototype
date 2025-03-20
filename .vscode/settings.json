@@ -12,8 +12,7 @@
 	 ".gitignore": true,
    ".nuxt": true,
    ".output": true,
-	 ".vscode": true,
-    "assets": true
+	 ".vscode": true
   },
   "eslint.useFlatConfig": true,
   "eslint.format.enable": true,
