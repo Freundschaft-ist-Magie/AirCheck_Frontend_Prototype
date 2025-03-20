@@ -1,3 +1,3 @@
-export function skibidiToileet(number) {
+export function testFunction(number: number) {
     return number + 1;
 }
