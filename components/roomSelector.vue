@@ -8,6 +8,10 @@ const props = defineProps({
 
 const model = ref()
 
+onMounted(() => {
+
+})
+
 </script>
 
 <template>
@@ -17,12 +21,8 @@ const model = ref()
         <div class="text-3xl font-bold text-black">{{ slotProps.value.name }}</div>
       </div>
       <span v-else class="text-3xl font-bold text-black">
-
-        <span v-if="!props.options[0]">
-          {{ slotProps.placeholder }}
-        </span>
-        <span v-else>
-          {{ props.options[0].name }}
+        <span>
+          {{ props.options && props.options.length > 0 ? props.options[0].name : 'No data' }}
         </span>
 
       </span>
