@@ -6,6 +6,43 @@ const co2 = ref(660);
 
 const isServerOnline = ref(false);
 
+const rooms = ref([
+  {
+    "id": 0,
+    "name": "string",
+    "humidity": 0,
+    "client": {
+      "id": 0,
+      "name": "string",
+      "room": {
+        "id": 0,
+        "name": "string",
+        "humidity": 0,
+        "client": "string",
+        "clientId": 0
+      }
+    },
+    "clientId": 0
+  },
+  {
+    "id": 1,
+    "name": "string",
+    "humidity": 0,
+    "client": {
+      "id": 1,
+      "name": "string",
+      "room": {
+        "id": 1,
+        "name": "string",
+        "humidity": 0,
+        "client": "string",
+        "clientId": 1
+      }
+    },
+    "clientId": 1
+  }
+])
+
 const roomName = ref('Room E20');
 const latestFetch = ref(new Date());
 const statusMapping = [
@@ -99,7 +136,16 @@ const chartOptions = ref({
 
     <div class="mt-4 p-4 bg-white shadow-md rounded-md flex justify-between items-center">
       <div>
-        <h2 class="text-3xl font-bold text-black">{{ roomName }}</h2>
+        <h2 class="">{{ roomName }}</h2>
+        <select
+            id="roomSelect"
+            name="roomSelect"
+            class="mt-1 block w-full rounded border text-3xl font-bold text-black border-gray-300 bg-white px-3 py-2 leading-tight focus:border-blue-500 focus:outline-none"
+        >
+          <option value="option1">Room 1</option>
+          <option value="option2">Room 2</option>
+          <option value="option3">Option 3</option>
+        </select>
         <p class="text-gray-500">Zuletzt Aktualisiert: {{formatDate(latestFetch)}}</p>
       </div>
       <p class="text-gray-500">{{ generateStatusText(200) }}</p>
@@ -124,12 +170,9 @@ const chartOptions = ref({
     </div>
 
     <div class="mt-4 grid grid-cols-3 gap-4">
-      <div class="bg-gray-300 shadow-md rounded-md flex flex-col justify-center items-center">
-        <p class="mb-2 text-center">Temperatur in den letzten 24 h</p>
-        <Chart type="line" :data="chartData" :options="chartOptions" class="h-30rem" />
-      </div>
-      <div class="bg-gray-300 p-4 shadow-md rounded-md flex items-center justify-center">Luftfeuchtigkeit in den letzten 24 h</div>
-      <div class="bg-gray-300 p-4 shadow-md rounded-md flex items-center justify-center">CO2 Level in den letzten 24 h</div>
+      <diagram :title='"Temperatur in den letzten 24 h"' :chart-data="chartData" :options="chartOptions" />
+      <diagram :title='"Luftfeuchtigkeit in den letzten 24 h"' :chart-data="chartData" :options="chartOptions" />
+      <diagram :title='"CO2 Level in den letzten 24 h"' :chart-data="chartData" :options="chartOptions" />
     </div>
   </div>
 </template>
