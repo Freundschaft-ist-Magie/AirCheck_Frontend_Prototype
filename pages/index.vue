@@ -6,43 +6,6 @@ const co2 = ref(660);
 
 const isServerOnline = ref(false);
 
-const rooms = ref([
-  {
-    "id": 0,
-    "name": "string",
-    "humidity": 0,
-    "client": {
-      "id": 0,
-      "name": "string",
-      "room": {
-        "id": 0,
-        "name": "string",
-        "humidity": 0,
-        "client": "string",
-        "clientId": 0
-      }
-    },
-    "clientId": 0
-  },
-  {
-    "id": 1,
-    "name": "string",
-    "humidity": 0,
-    "client": {
-      "id": 1,
-      "name": "string",
-      "room": {
-        "id": 1,
-        "name": "string",
-        "humidity": 0,
-        "client": "string",
-        "clientId": 1
-      }
-    },
-    "clientId": 1
-  }
-])
-
 const roomName = ref('Room E20');
 const latestFetch = ref(new Date());
 const statusMapping = [
@@ -118,24 +81,16 @@ const chartOptions = ref({
     },
   },
 });
-
 </script>
 
 <template>
   <div class="bg-gray-100 min-h-screen p-4">
-    <div class="bg-gray2 p-4 flex justify-between items-center rounded-md">
-      <div class="flex items-center">
-        <span class="text-2xl font-bold text-primary1">&#9733; AirCheck Dashboard</span>
-      </div>
-      <div class="flex items-center space-x-2">
-        <span :class="isServerOnline ? 'text-green-500' : 'text-red-500' ">&#9679;</span>
-        <span>Server {{ isServerOnline ? "Online" : "Offline" }}</span>
-        <button class="w-6 h-6 bg-black rounded-full"></button>
-      </div>
-    </div>
+    <MainLayoutHeader />
 
     <div class="mt-4 p-4 bg-white shadow-md rounded-md flex justify-between items-center">
       <div>
+        <h2 class="text-3xl font-bold text-black">{{ roomName }}</h2>
+        <p class="text-gray-500">Zuletzt Aktualisiert: {{ formatDate(latestFetch) }}</p>
         <h2 class="">{{ roomName }}</h2>
         <select
             id="roomSelect"
@@ -148,7 +103,12 @@ const chartOptions = ref({
         </select>
         <p class="text-gray-500">Zuletzt Aktualisiert: {{formatDate(latestFetch)}}</p>
       </div>
-      <p class="text-gray-500">{{ generateStatusText(200) }}</p>
+
+      <div class="flex gap-2 items-center">
+        <Icon name="mdi-light:information" style="color: black" />
+        <p class="text-gray-500">{{ generateStatusText(200) }}</p>
+      </div>
+
     </div>
 
     <div class="mt-4 grid grid-cols-3 gap-4">
@@ -159,7 +119,7 @@ const chartOptions = ref({
       </div>
       <div class="bg-white p-4 shadow-md rounded-md">
         <h3 class="font-bold text-primary2">Humidity</h3>
-        <p class="text-2xl font-bold" :class="calcNormals(humidity, 'humidity')">{{humidity}} %</p>
+        <p class="text-2xl font-bold" :class="calcNormals(humidity, 'humidity')">{{ humidity }} %</p>
         <p class="text-gray-500">Normaler Bereich: {{ calcNormalRangeText('humidity') }} %</p>
       </div>
       <div class="bg-white p-4 shadow-md rounded-md">
