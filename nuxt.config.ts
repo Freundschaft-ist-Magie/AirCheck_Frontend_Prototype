@@ -5,9 +5,7 @@ import Aura from '@primeuix/themes/aura';
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
-  modules: [
-    '@primevue/nuxt-module'
-  ],
+  modules: ['@primevue/nuxt-module', '@nuxt/icon', '@pinia/nuxt'],
 
   // https://tailwindcss.com/docs/installation/framework-guides/nuxt
   css: ['~/assets/css/main.css'],
