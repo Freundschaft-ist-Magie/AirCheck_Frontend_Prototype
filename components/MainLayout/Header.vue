@@ -5,6 +5,14 @@ const isServerOnline = ref(false);
 const togglePopover = (event: Event) => {
   popoverPanel.value.toggle(event);
 };
+
+const panelLinks = [
+  { to: '/', text: 'AirCheck Dashboard', icon: 'view-dashboard' },
+  { to: '/user/settings', text: 'Nutzer Einstellungen', icon: 'cog' },
+  { to: '/admin/dashboard', text: 'Admin Dashboard', icon: 'lock' },
+  { to: '/forecast/dashboard', text: 'Prognose Dashboard', icon: 'chart-line' },
+  { to: '/login', text: 'Login', icon: 'login' },
+];
 </script>
 
 <template>
@@ -27,17 +35,10 @@ const togglePopover = (event: Event) => {
 
         <OverlayPanel ref="popoverPanel" id="popoverPanel">
           <div class="flex flex-col gap-2 p-2">
-            <NuxtLink to="/user/settings" class="text-left hover:bg-gray-800 px-4 py-2 rounded-md">
-              Nutzer Einstellungen
-            </NuxtLink>
-            <NuxtLink to="/admin/dashboard" class="text-left hover:bg-gray-800 px-4 py-2 rounded-md">
-              Admin Dashboard
-            </NuxtLink>
-            <NuxtLink to="/forecast/dashboard" class="text-left hover:bg-gray-800 px-4 py-2 rounded-md">
-              Prognose Dashboard
-            </NuxtLink>
-            <NuxtLink to="/login" class="text-left hover:bg-gray-800 px-4 py-2 rounded-md">
-              Login
+            <NuxtLink v-for="panelLink in panelLinks" :to="panelLink.to"
+              class="flex items-center gap-2 text-left hover:bg-gray-800 px-4 py-2 rounded-md">
+              <Icon :name="`mdi-light:${panelLink.icon}`" class="w-5 h-5" />
+              <span>{{ panelLink.text }}</span>
             </NuxtLink>
           </div>
         </OverlayPanel>
