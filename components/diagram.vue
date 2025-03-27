@@ -9,7 +9,7 @@ const props = defineProps({
 </script>
 
 <template>
-  <div class="bg-gray-300 shadow-md rounded-md flex flex-col justify-center items-center">
+  <div class="bg-gray-300 shadow-md rounded-md flex text-black font-semibold flex-col justify-center items-center">
     <p class="mb-2 text-center">{{ props.title }}</p>
     <Chart type="line" :data="props.chartData" :options="props.chartOptions" class="h-30rem" />
   </div>

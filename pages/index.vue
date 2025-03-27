@@ -20,6 +20,30 @@ const normals = {
   co2: { max: 1000 },
 };
 
+const selectedRoom = ref();
+const rooms = ref([
+  {
+    "id": 1,
+    "name": "Room 1",
+    "humidity": 0,
+    "client": {
+      "id": 1,
+      "name": "string"
+    },
+    "clientId": 0
+  },
+  {
+    "id": 2,
+    "name": "Room 2",
+    "humidity": 0,
+    "client": {
+      "id": 2,
+      "name": "string"
+    },
+    "clientId": 0
+  }
+]);
+
 function formatDate(date: Date) {
   // Should be Jan 15, 2025 15:30
   return date.toLocaleString('de-CH', {
@@ -89,19 +113,8 @@ const chartOptions = ref({
 
     <div class="mt-4 p-4 bg-white shadow-md rounded-md flex justify-between items-center">
       <div>
-        <h2 class="text-3xl font-bold text-black">{{ roomName }}</h2>
+        <room-selector :options="rooms" :placeholder="'Hallo :D'" :filter-field="'name'" :selected="selectedRoom" />
         <p class="text-gray-500">Zuletzt Aktualisiert: {{ formatDate(latestFetch) }}</p>
-        <h2 class="">{{ roomName }}</h2>
-        <select
-            id="roomSelect"
-            name="roomSelect"
-            class="mt-1 block w-full rounded border text-3xl font-bold text-black border-gray-300 bg-white px-3 py-2 leading-tight focus:border-blue-500 focus:outline-none"
-        >
-          <option value="option1">Room 1</option>
-          <option value="option2">Room 2</option>
-          <option value="option3">Option 3</option>
-        </select>
-        <p class="text-gray-500">Zuletzt Aktualisiert: {{formatDate(latestFetch)}}</p>
       </div>
 
       <div class="flex gap-2 items-center">
