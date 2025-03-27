@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-
+const popoverPanel = ref();
 const temperature = ref(20);
 const humidity = ref(45);
 const co2 = ref(660);
@@ -82,6 +82,9 @@ const chartOptions = ref({
   },
 });
 
+const togglePopover = (event: Event) => {
+  popoverPanel.value.toggle(event);
+};
 </script>
 
 <template>
@@ -90,19 +93,51 @@ const chartOptions = ref({
       <div class="flex items-center">
         <span class="text-2xl font-bold text-primary1">&#9733; AirCheck Dashboard</span>
       </div>
-      <div class="flex items-center space-x-2">
-        <span :class="isServerOnline ? 'text-green-500' : 'text-red-500' ">&#9679;</span>
-        <span>Server {{ isServerOnline ? "Online" : "Offline" }}</span>
-        <button class="w-6 h-6 bg-black rounded-full"></button>
+
+      <div class="flex items-center gap-4 space-x-2 text-black">
+        <div class="flex gap-2 items-center">
+          <svg :class="isServerOnline ? 'text-green-500' : 'text-red-500'" class="w-3 h-3" viewBox="0 0 16 16"
+            fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="8" cy="8" r="8" />
+          </svg>
+          <span>Server {{ isServerOnline ? "Online" : "Offline" }}</span>
+        </div>
+        <div class="flex gap-2 items-center">
+          <Button icon="pi pi-ellipsis-v" severity="secondary" rounded @click="togglePopover" aria-haspopup="true"
+            aria-controls="popoverPanel" />
+
+          <OverlayPanel ref="popoverPanel" id="popoverPanel">
+            <div class="flex flex-col gap-2 p-2">
+              <NuxtLink to="/user/settings" class="text-left hover:bg-gray-800 px-4 py-2 rounded-md">
+                Nutzer Einstellungen
+              </NuxtLink>
+              <NuxtLink to="/admin/dashboard" class="text-left hover:bg-gray-800 px-4 py-2 rounded-md">
+                Admin Dashboard
+              </NuxtLink>
+              <NuxtLink to="/forecast/dashboard" class="text-left hover:bg-gray-800 px-4 py-2 rounded-md">
+                Prognose Dashboard
+              </NuxtLink>
+              <NuxtLink to="/login" class="text-left hover:bg-gray-800 px-4 py-2 rounded-md">
+                Login
+              </NuxtLink>
+            </div>
+          </OverlayPanel>
+        </div>
+
       </div>
     </div>
 
     <div class="mt-4 p-4 bg-white shadow-md rounded-md flex justify-between items-center">
       <div>
         <h2 class="text-3xl font-bold text-black">{{ roomName }}</h2>
-        <p class="text-gray-500">Zuletzt Aktualisiert: {{formatDate(latestFetch)}}</p>
+        <p class="text-gray-500">Zuletzt Aktualisiert: {{ formatDate(latestFetch) }}</p>
       </div>
-      <p class="text-gray-500">{{ generateStatusText(200) }}</p>
+
+      <div class="flex gap-2 items-center">
+        <Icon name="mdi-light:information" style="color: black" />
+        <p class="text-gray-500">{{ generateStatusText(200) }}</p>
+      </div>
+
     </div>
 
     <div class="mt-4 grid grid-cols-3 gap-4">
@@ -113,7 +148,7 @@ const chartOptions = ref({
       </div>
       <div class="bg-white p-4 shadow-md rounded-md">
         <h3 class="font-bold text-primary2">Humidity</h3>
-        <p class="text-2xl font-bold" :class="calcNormals(humidity, 'humidity')">{{humidity}} %</p>
+        <p class="text-2xl font-bold" :class="calcNormals(humidity, 'humidity')">{{ humidity }} %</p>
         <p class="text-gray-500">Normaler Bereich: {{ calcNormalRangeText('humidity') }} %</p>
       </div>
       <div class="bg-white p-4 shadow-md rounded-md">
@@ -125,11 +160,13 @@ const chartOptions = ref({
 
     <div class="mt-4 grid grid-cols-3 gap-4">
       <div class="bg-gray-300 shadow-md rounded-md flex flex-col justify-center items-center">
-        <p class="mb-2 text-center">Temperatur in den letzten 24 h</p>
+        <p class="mb-2 text-center text-black font-semibold">Temperatur in den letzten 24 h</p>
         <Chart type="line" :data="chartData" :options="chartOptions" class="h-30rem" />
       </div>
-      <div class="bg-gray-300 p-4 shadow-md rounded-md flex items-center justify-center">Luftfeuchtigkeit in den letzten 24 h</div>
-      <div class="bg-gray-300 p-4 shadow-md rounded-md flex items-center justify-center">CO2 Level in den letzten 24 h</div>
+      <div class="bg-gray-300 p-4 shadow-md rounded-md flex items-center justify-center">Luftfeuchtigkeit in den letzten
+        24 h</div>
+      <div class="bg-gray-300 p-4 shadow-md rounded-md flex items-center justify-center">CO2 Level in den letzten 24 h
+      </div>
     </div>
   </div>
 </template>
