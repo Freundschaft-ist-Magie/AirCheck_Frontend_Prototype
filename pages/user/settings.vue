@@ -83,7 +83,7 @@ function saveChanges() {
               v-model="newPassword.passwordConfirm"
               class="w-full"
             />
-            <label for="confirm_label">Neues Passwort</label>
+            <label for="confirm_label">Passwort bestätigen</label>
           </FloatLabel>
 
           <Button
