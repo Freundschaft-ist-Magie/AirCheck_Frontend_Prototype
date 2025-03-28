@@ -37,8 +37,8 @@ const checkboxValue = ref(false);
       <div class="flex justify-between">
         <div class="flex flex-col gap-8">
           <FloatLabel class="w-96!">
-            <InputText id="over_label" v-model="userData.username" class="w-full" />
-            <label for="over_label">Benutzername</label>
+            <InputText id="username_label" v-model="userData.username" class="w-full" />
+            <label for="username_label">Benutzername</label>
           </FloatLabel>
 
           <FloatLabel class="w-96!">
