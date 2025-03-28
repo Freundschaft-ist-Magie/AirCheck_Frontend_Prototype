@@ -11,12 +11,21 @@ const userData = ref({
   notifications: true,
 });
 
+const editableUserData = ref({ ...userData.value });
+
 const newPassword = ref({
   password: "",
   passwordConfirm: "",
 });
 
-const checkboxValue = ref(false);
+const checkboxValue = ref(userData.value.notifications);
+
+function saveChanges() {
+  userData.value = { ...editableUserData.value };
+  userData.value.notifications = checkboxValue.value;
+
+  console.log("Changes saved:", userData.value);
+}
 </script>
 
 <template>
@@ -28,8 +37,10 @@ const checkboxValue = ref(false);
         <div class="flex items-center gap-4 mb-4">
           <div class="w-16 h-16 bg-black rounded-full"></div>
           <div>
-            <h2 class="text-lg font-semibold text-black">{{ userData.username }}</h2>
-            <p class="text-gray1">{{ userData.email }}</p>
+            <h2 class="text-lg font-semibold text-black">
+              {{ editableUserData.username }}
+            </h2>
+            <p class="text-gray1">{{ editableUserData.email }}</p>
           </div>
         </div>
       </div>
@@ -37,12 +48,21 @@ const checkboxValue = ref(false);
       <div class="flex justify-between">
         <div class="flex flex-col gap-8">
           <FloatLabel class="w-96!">
-            <InputText id="username_label" v-model="userData.username" class="w-full" />
+            <InputText
+              id="username_label"
+              v-model="editableUserData.username"
+              class="w-full"
+            />
             <label for="username_label">Benutzername</label>
           </FloatLabel>
 
           <FloatLabel class="w-96!">
-            <InputText id="email_label" v-model="userData.email" class="w-full" />
+            <InputText
+              id="email_label"
+              v-model="editableUserData.email"
+              class="w-full"
+              disabled
+            />
             <label for="email_label">E-Mail</label>
           </FloatLabel>
 
@@ -71,18 +91,19 @@ const checkboxValue = ref(false);
             icon="pi pi-save"
             severity="info"
             class="text-white! bg-primary1! hover:bg-primary2/80! active:bg-primary2!"
+            @click="saveChanges"
           />
         </div>
 
         <div>
           <h3 class="text font-semibold text-black">Allgemeine Informationen</h3>
           <ul class="text text-gray-600 mt-2">
-            <li><strong>Id:</strong> Dh42-das2-8pw6-Qn7C</li>
-            <li><strong>Rolle:</strong> Benutzer</li>
-            <li><strong>Zugewiesene Geräte:</strong> Arduino 1</li>
-            <li><strong>Letzte Anmeldung:</strong> 2024-12-24</li>
-            <li><strong>Status:</strong> Aktiv</li>
-            <li><strong>Notizen:</strong> ist Teil der BM & normalen Klasse</li>
+            <li><strong>Id:</strong> {{ userData.id }}</li>
+            <li><strong>Rolle:</strong> {{ userData.role }}</li>
+            <li><strong>Zugewiesene Geräte:</strong> {{ userData.assignedDevices }}</li>
+            <li><strong>Letzte Anmeldung:</strong> {{ userData.lastLogin }}</li>
+            <li><strong>Status:</strong> {{ userData.status }}</li>
+            <li><strong>Notizen:</strong> {{ userData.notes }}</li>
           </ul>
         </div>
       </div>
