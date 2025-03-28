@@ -42,28 +42,28 @@ const checkboxValue = ref(false);
           </FloatLabel>
 
           <FloatLabel class="w-96!">
-            <InputText id="over_label" v-model="userData.email" class="w-full" />
-            <label for="over_label">E-Mail</label>
+            <InputText id="email_label" v-model="userData.email" class="w-full" />
+            <label for="email_label">E-Mail</label>
           </FloatLabel>
 
           <FloatLabel class="w-96!">
             <InputText
-              id="over_label"
+              id="password_label"
               type="password"
               v-model="newPassword.password"
               class="w-full"
             />
-            <label for="over_label">Neues Passwort</label>
+            <label for="password_label">Neues Passwort</label>
           </FloatLabel>
 
           <FloatLabel class="w-96!">
             <InputText
-              id="over_label"
+              id="confirm_label"
               type="password"
               v-model="newPassword.passwordConfirm"
               class="w-full"
             />
-            <label for="over_label">Neues Passwort</label>
+            <label for="confirm_label">Neues Passwort</label>
           </FloatLabel>
 
           <Button
