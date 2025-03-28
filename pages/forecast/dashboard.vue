@@ -20,7 +20,7 @@ const changeMetric = (metric: string) => {
       <div class="flex justify-center mb-4">
         <ButtonGroup>
           <Button v-for="metric in metrics" :key="metric.value" :label="metric.label"
-            :severity="selectedMetric === metric.value ? 'secondary' : 'plain'" class="px-4 py-2 text-gray-700"
+            :severity="selectedMetric === metric.value ? 'secondary' : 'info'" class="px-4 py-2 text-gray-700"
             @click="changeMetric(metric.value)" />
         </ButtonGroup>
       </div>
