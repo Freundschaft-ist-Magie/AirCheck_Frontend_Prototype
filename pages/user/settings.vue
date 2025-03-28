@@ -89,11 +89,14 @@ const checkboxValue = ref(false);
 
       <div class="mt-4 flex items-center">
         <div class="flex items-center gap-2">
-          <Checkbox v-model="checkboxValue" inputId="checkbox" value="Benachrichtigungen erhalten" />
+          <Checkbox
+            v-model="checkboxValue"
+            inputId="checkbox"
+            value="Benachrichtigungen erhalten"
+          />
           <label for="checkbox"> Benachrichtigungen erhalten </label>
         </div>
       </div>
-      
     </div>
   </div>
 </template>
