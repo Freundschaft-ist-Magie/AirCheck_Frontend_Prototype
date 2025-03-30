@@ -1,9 +1,10 @@
 <script lang="ts" setup>
+const layout = "default";
 </script>
 
 <template>
   <div>
-    <NuxtLayout>
+    <NuxtLayout :name="layout">
       <NuxtLoadingIndicator :color="'#fff'" />
       <NuxtPage />
     </NuxtLayout>
