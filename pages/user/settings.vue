@@ -18,11 +18,8 @@ const newPassword = ref({
   passwordConfirm: "",
 });
 
-const checkboxValue = ref(userData.value.notifications);
-
 function saveChanges() {
   userData.value = { ...editableUserData.value };
-  userData.value.notifications = checkboxValue.value;
 
   console.log("Changes saved:", userData.value);
 }
@@ -105,15 +102,18 @@ function saveChanges() {
       </div>
     </div>
 
+    <!--
     <div class="mt-4 flex items-center">
       <div class="flex items-center gap-2">
         <Checkbox
           v-model="checkboxValue"
-          inputId="checkbox"
+          inputId="notification"
+          name="notification"
           value="Benachrichtigungen erhalten"
         />
-        <label for="checkbox"> Benachrichtigungen erhalten </label>
+        <label for="notification">Benachrichtigungen erhalten</label>
       </div>
     </div>
+    -->
   </div>
 </template>
