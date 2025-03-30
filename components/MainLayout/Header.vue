@@ -36,7 +36,7 @@ const panelLinks = [
         <OverlayPanel ref="popoverPanel" id="popoverPanel">
           <div class="flex flex-col gap-2 p-2">
             <NuxtLink v-for="panelLink in panelLinks" :to="panelLink.to"
-              class="flex items-center gap-2 text-left hover:bg-gray-800 px-4 py-2 rounded-md">
+              class="flex items-center gap-2 text-left hover:bg-gray1/60 px-4 py-2 rounded-md">
               <Icon :name="`mdi-light:${panelLink.icon}`" class="w-5 h-5" />
               <span>{{ panelLink.text }}</span>
             </NuxtLink>
