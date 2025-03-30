@@ -40,45 +40,46 @@ function saveChanges() {
     </div>
 
     <div class="flex justify-between">
-      <div class="flex flex-col gap-8">
-        <FloatLabel class="w-96!">
+      <div class="flex flex-col gap-4">
+        <div class="w-96 flex flex-col gap-2">
+          <label for="username_label">Benutzername</label>
           <InputText
             id="username_label"
             v-model="editableUserData.username"
             class="w-full"
           />
-          <label for="username_label">Benutzername</label>
-        </FloatLabel>
+        </div>
 
-        <FloatLabel class="w-96!">
+        <div class="w-96 flex flex-col gap-2">
+          <label for="email_label">E-Mail</label>
           <InputText
+            type="email"
             id="email_label"
             v-model="editableUserData.email"
             class="w-full"
             disabled
           />
-          <label for="email_label">E-Mail</label>
-        </FloatLabel>
+        </div>
 
-        <FloatLabel class="w-96!">
+        <div class="w-96 flex flex-col gap-2">
+          <label for="password_label">Neues Passwort</label>
           <InputText
             id="password_label"
             type="password"
             v-model="newPassword.password"
             class="w-full"
           />
-          <label for="password_label">Neues Passwort</label>
-        </FloatLabel>
+        </div>
 
-        <FloatLabel class="w-96!">
+        <div class="w-96 flex flex-col gap-2">
+          <label for="confirm_label">Passwort bestätigen</label>
           <InputText
             id="confirm_label"
             type="password"
             v-model="newPassword.passwordConfirm"
             class="w-full"
           />
-          <label for="confirm_label">Passwort bestätigen</label>
-        </FloatLabel>
+        </div>
 
         <Button
           label="Speichern"
