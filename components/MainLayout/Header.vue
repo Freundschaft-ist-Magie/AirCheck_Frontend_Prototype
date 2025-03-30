@@ -17,8 +17,9 @@ const panelLinks = [
 
 <template>
   <div class="bg-gray2 p-4 flex justify-between items-center rounded-md">
-    <div class="flex items-center">
-      <span class="text-2xl font-bold text-primary2">&#9733; AirCheck Dashboard</span>
+    <div class="flex justify-center items-center gap-4">
+      <Icon name="mdi:air-conditioner" class="text-3xl text-primary2" />
+      <span class="text-2xl font-bold text-primary2"> AirCheck Dashboard </span>
     </div>
 
     <div class="flex items-center gap-4 space-x-2 text-black">
