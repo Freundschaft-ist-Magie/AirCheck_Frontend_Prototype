@@ -71,16 +71,19 @@ const cards = ref([
   {
     title: "Temperatur",
     text: "20 °C",
+    icon: "mdi:thermometer-low",
     normalRange: "20 - 25 °C",
   },
   {
     title: "Luftfeuchtigkeit",
     text: "45 %",
+    icon: "mdi:weather-rainy",
     normalRange: "30 - 60 %",
   },
   {
     title: "CO2 Level",
     text: "660 ppm",
+    icon: "mdi:molecule-co2",
     normalRange: "< 2000 ppm",
   },
 ]);
@@ -105,11 +108,12 @@ const cards = ref([
   </div>
 
   <div class="mt-4 grid grid-cols-3 gap-4">
-    <StatisticCard
+    <statisticCard
       v-for="card in cards"
       :key="card.title"
       :title="card.title"
       :text="card.text"
+      :icon="card.icon"
       :normalRange="card.normalRange"
     />
   </div>
