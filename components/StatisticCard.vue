@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 defineProps({
   title: String,
-  text: Number,
+  text: String,
   icon: String,
   normalRange: String,
 });
