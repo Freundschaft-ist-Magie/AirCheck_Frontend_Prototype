@@ -1,4 +1,10 @@
 <script lang="ts" setup>
+import { onMounted, ref } from "vue";
+import RoomsService from "~/utils/services/RoomsService";
+import Room from "~/models/Room";
+import GlobalHelper from "~/utils/helper/GlobalHelper";
+import StatisticCardObj from "~/models/StatisticCardObj";
+
 const latestFetch = ref(new Date());
 const statusMapping = [
   { status: "Alles ok", codes: [200, 201, 204] },
@@ -6,45 +12,8 @@ const statusMapping = [
   { status: "Alles schlecht", codes: [500, 502, 503] },
 ];
 
-const selectedRoom = ref();
-const rooms = ref([
-  {
-    id: 1,
-    name: "Room 1",
-    humidity: 0,
-    client: {
-      id: 1,
-      name: "string",
-    },
-    clientId: 0,
-  },
-  {
-    id: 2,
-    name: "Room 2",
-    humidity: 0,
-    client: {
-      id: 2,
-      name: "string",
-    },
-    clientId: 0,
-  },
-]);
-
-function formatDate(date: Date) {
-  // Should be Jan 15, 2025 15:30
-  return date.toLocaleString("de-CH", {
-    month: "short",
-    day: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-}
-
-function generateStatusText(statusCode: number) {
-  const status = statusMapping.find((status) => status.codes.includes(statusCode));
-  return status ? status.status : "unknown";
-}
+const selectedRoom = ref<Room | null>(null);
+const rooms = ref<Room[]>([]);
 
 const chartData = ref({
   labels: ["12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"],
@@ -67,26 +36,67 @@ const chartOptions = ref({
   },
 });
 
-const cards = ref([
-  {
-    title: "Temperatur",
-    text: "20 °C",
-    icon: "mdi:thermometer-low",
-    normalRange: "20 - 25 °C",
-  },
-  {
-    title: "Luftfeuchtigkeit",
-    text: "45 %",
-    icon: "mdi:weather-rainy",
-    normalRange: "30 - 60 %",
-  },
-  {
-    title: "CO2 Level",
-    text: "660 ppm",
-    icon: "mdi:molecule-co2",
-    normalRange: "< 2000 ppm",
-  },
-]);
+const cards = ref<StatisticCardObj[]>([]);
+
+function formatDate(date: Date) {
+  return date.toLocaleString("de-CH", {
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
+function generateStatusText(statusCode: number) {
+  const status = statusMapping.find((status) => status.codes.includes(statusCode));
+  return status ? status.status : "unknown";
+}
+
+async function fetchRooms() {
+  const roomsService = new RoomsService();
+  const fetchedRooms = await roomsService.Get();
+
+  // Update rooms with fetched data
+  rooms.value = fetchedRooms.map((room: any) => {
+    return new Room(room.id, room.name, room.description, {
+      temperature: room.environmentData.temperature,
+      humidity: room.environmentData.humidity,
+      airQuality: room.environmentData.airQuality,
+    });
+  });
+
+  selectedRoom.value = rooms.value[0];
+}
+
+function setStatisticCards() {
+  if (!selectedRoom.value) {
+    throw new Error("When Cards are to be set, there must be a room selected!");
+  }
+
+  const cardThemperature = GlobalHelper.MapThemperature(
+    selectedRoom.value.environmentData.temperature[
+      selectedRoom.value.environmentData.temperature.length - 1
+    ].value
+  );
+  const cardHumidity = GlobalHelper.MapHumidity(
+    selectedRoom.value.environmentData.humidity[
+      selectedRoom.value.environmentData.humidity.length - 1
+    ].value
+  );
+  const cardairQuality = GlobalHelper.MapairQuality(
+    selectedRoom.value.environmentData.airQuality[
+      selectedRoom.value.environmentData.airQuality.length - 1
+    ].value
+  );
+
+  cards.value.push(cardThemperature, cardHumidity, cardairQuality);
+}
+
+onMounted(async () => {
+  await fetchRooms();
+  setStatisticCards();
+});
 </script>
 
 <template>
@@ -94,7 +104,7 @@ const cards = ref([
     <div>
       <room-selector
         :options="rooms"
-        :placeholder="'Hallo :D'"
+        :placeholder="'Raum auswählen'"
         :filter-field="'name'"
         :selected="selectedRoom"
       />
