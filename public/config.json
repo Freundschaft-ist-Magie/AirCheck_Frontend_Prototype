@@ -1,5 +1,20 @@
 {
   "appName": "Air Check",
   "teamName": "Team:0",
-  "Version": "1.0.0"
+  "Version": "1.0.0",
+  "temperature": {
+    "title": "Temperatur",
+    "icon": "mdi:thermometer-low",
+    "normalRange": "20 - 25 °C"
+  },
+  "humidity": {
+    "title": "Luftfeuchtigkeit",
+    "icon": "mdi:water-percent",
+    "normalRange": "40 - 60 %"
+  },
+  "airQuality": {
+    "title": "Luftqualität",
+    "icon": "mdi:air-filter",
+    "normalRange": "> 2000 ppm"
+  }
 }
