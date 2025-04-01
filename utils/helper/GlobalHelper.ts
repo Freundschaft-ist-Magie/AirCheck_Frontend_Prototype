@@ -35,8 +35,7 @@ class GlobalHelper {
   }
 
   public static MapChartData(temperature: SensorData[]) {
-    const { title } = config.temperature;
-    const chartColor = config.chartColor;
+    const { title, chartColor } = config.temperature;
 
     const labels = temperature.map((temperature) => {
       const date = new Date(temperature.timestamp).toISOString().split("T")[1].split(".")[0];
@@ -57,8 +56,7 @@ class GlobalHelper {
   }
 
   public static MapChartDataHumidity(humidity: SensorData[]) {
-    const { title } = config.humidity;
-    const chartColor = config.chartColor;
+    const { title, chartColor } = config.humidity;
 
     const labels = humidity.map((humidity) => {
       const date = new Date(humidity.timestamp).toISOString().split("T")[1].split(".")[0];
@@ -79,8 +77,7 @@ class GlobalHelper {
   }
 
   public static MapChartDataAirQuality(airQuality: SensorData[]) {
-    const { title } = config.airQuality;
-    const chartColor = config.chartColor;
+    const { title, chartColor } = config.airQuality;
 
     const labels = airQuality.map((airQuality) => {
       const date = new Date(airQuality.timestamp).toISOString().split("T")[1].split(".")[0];
