@@ -8,12 +8,6 @@ import ChartData from "~/models/ChartData";
 import ChartOptions from "~/models/ChartOptions";
 
 const latestFetch = ref(new Date());
-const statusMapping = [
-  { status: "Alles ok", codes: [200, 201, 204] },
-  { status: "Fast ok", codes: [400, 401, 403, 404] },
-  { status: "Alles schlecht", codes: [500, 502, 503] },
-];
-
 const selectedRoom = ref<Room>();
 const rooms = ref<Room[]>([]);
 const cards = ref<StatisticCardObj[]>([]);
@@ -32,11 +26,6 @@ function formatDate(date: Date) {
     hour: "2-digit",
     minute: "2-digit",
   });
-}
-
-function generateStatusText(statusCode: number) {
-  const status = statusMapping.find((status) => status.codes.includes(statusCode));
-  return status ? status.status : "unknown";
 }
 
 onMounted(async () => {
@@ -103,11 +92,6 @@ onMounted(async () => {
         :selected="selectedRoom"
       />
       <p class="text-gray-500">Zuletzt Aktualisiert: {{ formatDate(latestFetch) }}</p>
-    </div>
-
-    <div class="flex gap-2 items-center">
-      <Icon name="mdi-light:information" style="color: black" />
-      <p class="text-gray-500">{{ generateStatusText(200) }}</p>
     </div>
   </div>
 
