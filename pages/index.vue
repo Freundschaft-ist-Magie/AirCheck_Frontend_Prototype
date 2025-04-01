@@ -4,6 +4,8 @@ import RoomsService from "~/utils/services/RoomsService";
 import Room from "~/models/Room";
 import GlobalHelper from "~/utils/helper/GlobalHelper";
 import StatisticCardObj from "~/models/StatisticCardObj";
+import ChartData from "~/models/ChartData";
+import ChartOptions from "~/models/ChartOptions";
 
 const latestFetch = ref(new Date());
 const statusMapping = [
@@ -12,31 +14,15 @@ const statusMapping = [
   { status: "Alles schlecht", codes: [500, 502, 503] },
 ];
 
-const selectedRoom = ref<Room | null>(null);
+const selectedRoom = ref<Room>();
 const rooms = ref<Room[]>([]);
-
-const chartData = ref({
-  labels: ["12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"],
-  datasets: [
-    {
-      label: "Temperatur",
-      data: [20, 21, 22, 23, 24, 25, 26],
-      fill: false,
-      borderColor: "rgb(75, 192, 192)",
-      tension: 0.1,
-    },
-  ],
-});
-
-const chartOptions = ref({
-  scales: {
-    y: {
-      beginAtZero: true,
-    },
-  },
-});
-
 const cards = ref<StatisticCardObj[]>([]);
+const charts = ref<{ data: ChartData; options: ChartOptions }[]>([]);
+const chartTitles = ref([
+  "Temperatur in den letzten 24 h",
+  "Luftfeuchtigkeit in den letzten 24 h",
+  "CO2 Level in den letzten 24 h",
+]);
 
 function formatDate(date: Date) {
   return date.toLocaleString("de-CH", {
@@ -53,7 +39,7 @@ function generateStatusText(statusCode: number) {
   return status ? status.status : "unknown";
 }
 
-async function fetchRooms() {
+onMounted(async () => {
   const roomsService = new RoomsService();
   const fetchedRooms = await roomsService.Get();
 
@@ -67,13 +53,8 @@ async function fetchRooms() {
   });
 
   selectedRoom.value = rooms.value[0];
-}
 
-function setStatisticCards() {
-  if (!selectedRoom.value) {
-    throw new Error("When Cards are to be set, there must be a room selected!");
-  }
-
+  // set cards
   const cardThemperature = GlobalHelper.MapThemperature(
     selectedRoom.value.environmentData.temperature[
       selectedRoom.value.environmentData.temperature.length - 1
@@ -84,18 +65,31 @@ function setStatisticCards() {
       selectedRoom.value.environmentData.humidity.length - 1
     ].value
   );
-  const cardairQuality = GlobalHelper.MapairQuality(
+  const cardAirQuality = GlobalHelper.MapAirQuality(
     selectedRoom.value.environmentData.airQuality[
       selectedRoom.value.environmentData.airQuality.length - 1
     ].value
   );
 
-  cards.value.push(cardThemperature, cardHumidity, cardairQuality);
-}
+  // set diagram data
+  const temperatureData = GlobalHelper.MapChartData(
+    selectedRoom.value.environmentData.temperature
+  );
+  const humidityData = GlobalHelper.MapChartData(
+    selectedRoom.value.environmentData.humidity
+  );
+  const airQualityData = GlobalHelper.MapChartData(
+    selectedRoom.value.environmentData.airQuality
+  );
 
-onMounted(async () => {
-  await fetchRooms();
-  setStatisticCards();
+  const chartOptions = new ChartOptions();
+
+  cards.value.push(cardThemperature, cardHumidity, cardAirQuality);
+  charts.value.push(
+    { data: temperatureData, options: chartOptions },
+    { data: humidityData, options: chartOptions },
+    { data: airQualityData, options: chartOptions }
+  );
 });
 </script>
 
@@ -118,7 +112,7 @@ onMounted(async () => {
   </div>
 
   <div class="mt-4 grid grid-cols-3 gap-4">
-    <statisticCard
+    <StatisticCard
       v-for="card in cards"
       :key="card.title"
       :title="card.title"
@@ -129,20 +123,12 @@ onMounted(async () => {
   </div>
 
   <div class="mt-4 grid grid-cols-3 gap-4">
-    <diagram
-      :title="'Temperatur in den letzten 24 h'"
-      :chart-data="chartData"
-      :options="chartOptions"
-    />
-    <diagram
-      :title="'Luftfeuchtigkeit in den letzten 24 h'"
-      :chart-data="chartData"
-      :options="chartOptions"
-    />
-    <diagram
-      :title="'CO2 Level in den letzten 24 h'"
-      :chart-data="chartData"
-      :options="chartOptions"
+    <StatisticDiagram
+      v-for="(chart, index) in charts"
+      :key="index"
+      :title="chartTitles[index]"
+      :chartData="chart.data"
+      :chartOptions="chart.options"
     />
   </div>
 </template>

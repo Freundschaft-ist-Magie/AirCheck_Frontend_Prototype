@@ -16,5 +16,6 @@
     "title": "Luftqualität",
     "icon": "mdi:air-filter",
     "normalRange": "> 2000 ppm"
-  }
+  },
+  "chartColor": "#33FF57"
 }

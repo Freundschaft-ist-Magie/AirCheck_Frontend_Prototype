@@ -6,30 +6,54 @@
     "environmentData": {
       "temperature": [
         {
-          "value": "22.5",
+          "value": "12.5",
           "timestamp": "2023-10-01T10:00:00Z"
         },
         {
-          "value": "22.7",
+          "value": "28",
           "timestamp": "2023-10-01T11:00:00Z"
         },
         {
-          "value": "22.8",
+          "value": "33",
           "timestamp": "2023-10-01T12:00:00Z"
+        },
+        {
+          "value": "35",
+          "timestamp": "2023-10-01T13:00:00Z"
+        },
+        {
+          "value": "34",
+          "timestamp": "2023-10-01T14:00:00Z"
+        },
+        {
+          "value": "32",
+          "timestamp": "2023-10-01T15:00:00Z"
         }
       ],
       "humidity": [
         {
-          "value": "45",
+          "value": "87",
           "timestamp": "2023-10-01T10:00:00Z"
         },
         {
-          "value": "47",
+          "value": "33",
           "timestamp": "2023-10-01T11:00:00Z"
         },
         {
-          "value": "50",
+          "value": "69",
           "timestamp": "2023-10-01T12:00:00Z"
+        },
+        {
+          "value": "70",
+          "timestamp": "2023-10-01T13:00:00Z"
+        },
+        {
+          "value": "65",
+          "timestamp": "2023-10-01T14:00:00Z"
+        },
+        {
+          "value": "60",
+          "timestamp": "2023-10-01T15:00:00Z"
         }
       ],
       "airQuality": [
@@ -38,12 +62,24 @@
           "timestamp": "2023-10-01T10:00:00Z"
         },
         {
-          "value": "410",
+          "value": "767",
           "timestamp": "2023-10-01T11:00:00Z"
         },
         {
-          "value": "420",
+          "value": "254",
           "timestamp": "2023-10-01T12:00:00Z"
+        },
+        {
+          "value": "200",
+          "timestamp": "2023-10-01T13:00:00Z"
+        },
+        {
+          "value": "350",
+          "timestamp": "2023-10-01T14:00:00Z"
+        },
+        {
+          "value": "420",
+          "timestamp": "2023-10-01T15:00:00Z"
         }
       ]
     }
@@ -65,6 +101,18 @@
         {
           "value": "23.2",
           "timestamp": "2023-10-01T12:00:00Z"
+        },
+        {
+          "value": "23.4",
+          "timestamp": "2023-10-01T13:00:00Z"
+        },
+        {
+          "value": "23.5",
+          "timestamp": "2023-10-01T14:00:00Z"
+        },
+        {
+          "value": "23.6",
+          "timestamp": "2023-10-01T15:00:00Z"
         }
       ],
       "humidity": [
@@ -79,6 +127,18 @@
         {
           "value": "55",
           "timestamp": "2023-10-01T12:00:00Z"
+        },
+        {
+          "value": "58",
+          "timestamp": "2023-10-01T13:00:00Z"
+        },
+        {
+          "value": "60",
+          "timestamp": "2023-10-01T14:00:00Z"
+        },
+        {
+          "value": "62",
+          "timestamp": "2023-10-01T15:00:00Z"
         }
       ],
       "airQuality": [
@@ -93,6 +153,18 @@
         {
           "value": "440",
           "timestamp": "2023-10-01T12:00:00Z"
+        },
+        {
+          "value": "460",
+          "timestamp": "2023-10-01T13:00:00Z"
+        },
+        {
+          "value": "470",
+          "timestamp": "2023-10-01T14:00:00Z"
+        },
+        {
+          "value": "480",
+          "timestamp": "2023-10-01T15:00:00Z"
         }
       ]
     }
@@ -114,6 +186,18 @@
         {
           "value": "24.2",
           "timestamp": "2023-10-01T12:00:00Z"
+        },
+        {
+          "value": "24.4",
+          "timestamp": "2023-10-01T13:00:00Z"
+        },
+        {
+          "value": "24.5",
+          "timestamp": "2023-10-01T14:00:00Z"
+        },
+        {
+          "value": "24.6",
+          "timestamp": "2023-10-01T15:00:00Z"
         }
       ],
       "humidity": [
@@ -128,6 +212,18 @@
         {
           "value": "60",
           "timestamp": "2023-10-01T12:00:00Z"
+        },
+        {
+          "value": "62",
+          "timestamp": "2023-10-01T13:00:00Z"
+        },
+        {
+          "value": "64",
+          "timestamp": "2023-10-01T14:00:00Z"
+        },
+        {
+          "value": "66",
+          "timestamp": "2023-10-01T15:00:00Z"
         }
       ],
       "airQuality": [
@@ -142,6 +238,18 @@
         {
           "value": "460",
           "timestamp": "2023-10-01T12:00:00Z"
+        },
+        {
+          "value": "470",
+          "timestamp": "2023-10-01T13:00:00Z"
+        },
+        {
+          "value": "480",
+          "timestamp": "2023-10-01T14:00:00Z"
+        },
+        {
+          "value": "490",
+          "timestamp": "2023-10-01T15:00:00Z"
         }
       ]
     }
