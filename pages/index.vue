@@ -44,7 +44,7 @@ onMounted(async () => {
   selectedRoom.value = rooms.value[0];
 
   // set cards
-  const cardThemperature = GlobalHelper.MapThemperature(
+  const cardTemperature = GlobalHelper.MapTemperature(
     selectedRoom.value.environmentData.temperature[
       selectedRoom.value.environmentData.temperature.length - 1
     ].value
