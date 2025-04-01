@@ -4,7 +4,7 @@ import Dataset from "~/models/Dataset";
 import type SensorData from "~/models/SensorData";
 
 class GlobalHelper {
-  public static MapThemperature(themperature: number) {
+  public static MapTemperature(themperature: number) {
     const { title, icon, normalRange } = config.temperature;
     return {
       title,

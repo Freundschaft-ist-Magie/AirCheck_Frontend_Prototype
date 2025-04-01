@@ -73,7 +73,7 @@ onMounted(async () => {
 
   const chartOptions = new ChartOptions();
 
-  cards.value.push(cardThemperature, cardHumidity, cardAirQuality);
+  cards.value.push(cardTemperature, cardHumidity, cardAirQuality);
   charts.value.push(
     { data: temperatureData, options: chartOptions },
     { data: humidityData, options: chartOptions },
