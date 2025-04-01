@@ -75,10 +75,10 @@ onMounted(async () => {
   const temperatureData = GlobalHelper.MapChartData(
     selectedRoom.value.environmentData.temperature
   );
-  const humidityData = GlobalHelper.MapChartData(
+  const humidityData = GlobalHelper.MapChartDataHumidity(
     selectedRoom.value.environmentData.humidity
   );
-  const airQualityData = GlobalHelper.MapChartData(
+  const airQualityData = GlobalHelper.MapChartDataAirQuality(
     selectedRoom.value.environmentData.airQuality
   );
 
