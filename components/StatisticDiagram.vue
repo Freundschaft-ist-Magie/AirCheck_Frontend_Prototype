@@ -1,0 +1,17 @@
+<script setup lang="ts">
+import type ChartData from "~/models/ChartData";
+import type ChartOptions from "~/models/ChartOptions";
+
+defineProps<{
+  title: string;
+  chartData: ChartData;
+  chartOptions: ChartOptions;
+}>();
+</script>
+
+<template>
+  <div class="bg-white p-4 shadow-md rounded-md">
+    <h3 class="font-bold text-primary2 text-center">{{ title }}</h3>
+    <Chart type="line" :data="chartData" :options="chartOptions" />
+  </div>
+</template>

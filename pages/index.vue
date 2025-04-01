@@ -1,37 +1,24 @@
 <script lang="ts" setup>
-const latestFetch = ref(new Date());
-const statusMapping = [
-  { status: "Alles ok", codes: [200, 201, 204] },
-  { status: "Fast ok", codes: [400, 401, 403, 404] },
-  { status: "Alles schlecht", codes: [500, 502, 503] },
-];
+import { onMounted, ref } from "vue";
+import RoomsService from "~/utils/services/RoomsService";
+import Room from "~/models/Room";
+import GlobalHelper from "~/utils/helper/GlobalHelper";
+import StatisticCardObj from "~/models/StatisticCardObj";
+import ChartData from "~/models/ChartData";
+import ChartOptions from "~/models/ChartOptions";
 
-const selectedRoom = ref();
-const rooms = ref([
-  {
-    id: 1,
-    name: "Room 1",
-    humidity: 0,
-    client: {
-      id: 1,
-      name: "string",
-    },
-    clientId: 0,
-  },
-  {
-    id: 2,
-    name: "Room 2",
-    humidity: 0,
-    client: {
-      id: 2,
-      name: "string",
-    },
-    clientId: 0,
-  },
+const latestFetch = ref(new Date());
+const selectedRoom = ref<Room>();
+const rooms = ref<Room[]>([]);
+const cards = ref<StatisticCardObj[]>([]);
+const charts = ref<{ data: ChartData; options: ChartOptions }[]>([]);
+const chartTitles = ref([
+  "Temperatur in den letzten 24 h",
+  "Luftfeuchtigkeit in den letzten 24 h",
+  "CO2 Level in den letzten 24 h",
 ]);
 
 function formatDate(date: Date) {
-  // Should be Jan 15, 2025 15:30
   return date.toLocaleString("de-CH", {
     month: "short",
     day: "2-digit",
@@ -41,52 +28,58 @@ function formatDate(date: Date) {
   });
 }
 
-function generateStatusText(statusCode: number) {
-  const status = statusMapping.find((status) => status.codes.includes(statusCode));
-  return status ? status.status : "unknown";
-}
+onMounted(async () => {
+  const roomsService = new RoomsService();
+  const fetchedRooms = await roomsService.Get();
 
-const chartData = ref({
-  labels: ["12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"],
-  datasets: [
-    {
-      label: "Temperatur",
-      data: [20, 21, 22, 23, 24, 25, 26],
-      fill: false,
-      borderColor: "rgb(75, 192, 192)",
-      tension: 0.1,
-    },
-  ],
+  // Update rooms with fetched data
+  rooms.value = fetchedRooms.map((room: any) => {
+    return new Room(room.id, room.name, room.description, {
+      temperature: room.environmentData.temperature,
+      humidity: room.environmentData.humidity,
+      airQuality: room.environmentData.airQuality,
+    });
+  });
+
+  selectedRoom.value = rooms.value[0];
+
+  // set cards
+  const cardTemperature = GlobalHelper.MapTemperature(
+    selectedRoom.value.environmentData.temperature[
+      selectedRoom.value.environmentData.temperature.length - 1
+    ].value
+  );
+  const cardHumidity = GlobalHelper.MapHumidity(
+    selectedRoom.value.environmentData.humidity[
+      selectedRoom.value.environmentData.humidity.length - 1
+    ].value
+  );
+  const cardAirQuality = GlobalHelper.MapAirQuality(
+    selectedRoom.value.environmentData.airQuality[
+      selectedRoom.value.environmentData.airQuality.length - 1
+    ].value
+  );
+
+  // set diagram data
+  const temperatureData = GlobalHelper.MapChartData(
+    selectedRoom.value.environmentData.temperature
+  );
+  const humidityData = GlobalHelper.MapChartDataHumidity(
+    selectedRoom.value.environmentData.humidity
+  );
+  const airQualityData = GlobalHelper.MapChartDataAirQuality(
+    selectedRoom.value.environmentData.airQuality
+  );
+
+  const chartOptions = new ChartOptions();
+
+  cards.value.push(cardThemperature, cardHumidity, cardAirQuality);
+  charts.value.push(
+    { data: temperatureData, options: chartOptions },
+    { data: humidityData, options: chartOptions },
+    { data: airQualityData, options: chartOptions }
+  );
 });
-
-const chartOptions = ref({
-  scales: {
-    y: {
-      beginAtZero: true,
-    },
-  },
-});
-
-const cards = ref([
-  {
-    title: "Temperatur",
-    text: "20 °C",
-    icon: "mdi:thermometer-low",
-    normalRange: "20 - 25 °C",
-  },
-  {
-    title: "Luftfeuchtigkeit",
-    text: "45 %",
-    icon: "mdi:weather-rainy",
-    normalRange: "30 - 60 %",
-  },
-  {
-    title: "CO2 Level",
-    text: "660 ppm",
-    icon: "mdi:molecule-co2",
-    normalRange: "< 2000 ppm",
-  },
-]);
 </script>
 
 <template>
@@ -94,21 +87,16 @@ const cards = ref([
     <div>
       <room-selector
         :options="rooms"
-        :placeholder="'Hallo :D'"
+        :placeholder="'Raum auswählen'"
         :filter-field="'name'"
         :selected="selectedRoom"
       />
       <p class="text-gray-500">Zuletzt Aktualisiert: {{ formatDate(latestFetch) }}</p>
     </div>
-
-    <div class="flex gap-2 items-center">
-      <Icon name="mdi-light:information" style="color: black" />
-      <p class="text-gray-500">{{ generateStatusText(200) }}</p>
-    </div>
   </div>
 
   <div class="mt-4 grid grid-cols-3 gap-4">
-    <statisticCard
+    <StatisticCard
       v-for="card in cards"
       :key="card.title"
       :title="card.title"
@@ -119,20 +107,12 @@ const cards = ref([
   </div>
 
   <div class="mt-4 grid grid-cols-3 gap-4">
-    <diagram
-      :title="'Temperatur in den letzten 24 h'"
-      :chart-data="chartData"
-      :options="chartOptions"
-    />
-    <diagram
-      :title="'Luftfeuchtigkeit in den letzten 24 h'"
-      :chart-data="chartData"
-      :options="chartOptions"
-    />
-    <diagram
-      :title="'CO2 Level in den letzten 24 h'"
-      :chart-data="chartData"
-      :options="chartOptions"
+    <StatisticDiagram
+      v-for="(chart, index) in charts"
+      :key="index"
+      :title="chartTitles[index]"
+      :chartData="chart.data"
+      :chartOptions="chart.options"
     />
   </div>
 </template>
