@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { onMounted, ref } from "vue";
 import RoomsService from "~/utils/services/RoomsService";
 import Room from "~/models/Room";
 import GlobalHelper from "~/utils/helper/GlobalHelper";
@@ -8,7 +7,7 @@ import ChartData from "~/models/ChartData";
 import ChartOptions from "~/models/ChartOptions";
 
 const latestFetch = ref(new Date());
-const selectedRoom = ref<Room>();
+const selectedRoom = ref<Room | null>(null);
 const rooms = ref<Room[]>([]);
 const cards = ref<StatisticCardObj[]>([]);
 const charts = ref<{ data: ChartData; options: ChartOptions }[]>([]);
@@ -17,16 +16,6 @@ const chartTitles = ref([
   "Luftfeuchtigkeit in den letzten 24 h",
   "CO2 Level in den letzten 24 h",
 ]);
-
-function formatDate(date: Date) {
-  return date.toLocaleString("de-CH", {
-    month: "short",
-    day: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-}
 
 onMounted(async () => {
   const roomsService = new RoomsService();
@@ -61,7 +50,7 @@ onMounted(async () => {
   );
 
   // set diagram data
-  const temperatureData = GlobalHelper.MapChartData(
+  const temperatureData = GlobalHelper.MapChartDataTemperature(
     selectedRoom.value.environmentData.temperature
   );
   const humidityData = GlobalHelper.MapChartDataHumidity(
@@ -83,17 +72,11 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="mt-4 p-4 bg-white shadow-md rounded-md flex justify-between items-center">
-    <div>
-      <room-selector
-        :options="rooms"
-        :placeholder="'Raum auswählen'"
-        :filter-field="'name'"
-        :selected="selectedRoom"
-      />
-      <p class="text-gray-500">Zuletzt Aktualisiert: {{ formatDate(latestFetch) }}</p>
-    </div>
-  </div>
+  <RoomSelectorCard
+    :latestFetch="latestFetch"
+    :selectedRoom="selectedRoom"
+    :rooms="rooms"
+  />
 
   <div class="mt-4 grid grid-cols-3 gap-4">
     <StatisticCard

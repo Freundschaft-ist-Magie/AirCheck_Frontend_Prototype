@@ -34,67 +34,114 @@ class GlobalHelper {
     };
   }
 
-  public static MapChartData(temperature: SensorData[]) {
+  public static MapChartDataTemperature(temperature: SensorData[], isForecast: boolean = false) {
     const { title, chartColor } = config.temperature;
+    const forecastColor = config.forecastColor;
 
-    const labels = temperature.map((temperature) => {
-      const date = new Date(temperature.timestamp).toISOString().split("T")[1].split(".")[0];
+    const labels = temperature.map((reading) => {
+      const date = new Date(reading.timestamp).toISOString().split("T")[1].split(".")[0];
       return date;
     });
 
     const dataset = new Dataset(
       title,
-      temperature.map((temperature) => {
-        return temperature.value;
+      temperature.map((reading) => {
+        return Number(reading.value);
       }),
       false,
-      chartColor,
+      isForecast ? forecastColor : chartColor,
       0.4
     );
 
     return new ChartData(labels, [dataset]);
   }
 
-  public static MapChartDataHumidity(humidity: SensorData[]) {
+  public static MapChartDataHumidity(humidity: SensorData[], isForecast: boolean = false) {
     const { title, chartColor } = config.humidity;
+    const forecastColor = config.forecastColor;
 
-    const labels = humidity.map((humidity) => {
-      const date = new Date(humidity.timestamp).toISOString().split("T")[1].split(".")[0];
+    const labels = humidity.map((reading) => {
+      const date = new Date(reading.timestamp).toISOString().split("T")[1].split(".")[0];
       return date;
     });
 
     const dataset = new Dataset(
       title,
-      humidity.map((humidity) => {
-        return humidity.value;
+      humidity.map((reading) => {
+        return Number(reading.value);
       }),
       false,
-      chartColor,
+      isForecast ? forecastColor : chartColor,
       0.4
     );
 
     return new ChartData(labels, [dataset]);
   }
 
-  public static MapChartDataAirQuality(airQuality: SensorData[]) {
+  public static MapChartDataAirQuality(airQuality: SensorData[], isForecast: boolean = false) {
     const { title, chartColor } = config.airQuality;
+    const forecastColor = config.forecastColor;
 
-    const labels = airQuality.map((airQuality) => {
-      const date = new Date(airQuality.timestamp).toISOString().split("T")[1].split(".")[0];
+    const labels = airQuality.map((reading) => {
+      const date = new Date(reading.timestamp).toISOString().split("T")[1].split(".")[0];
       return date;
     });
 
     const dataset = new Dataset(
       title,
-      airQuality.map((airQuality) => {
-        return airQuality.value;
+      airQuality.map((reading) => {
+        return Number(reading.value);
+      }),
+      false,
+      isForecast ? forecastColor : chartColor,
+      0.4
+    );
+
+    return new ChartData(labels, [dataset]);
+  }
+
+  public static MapCombinedChartData(actualData: SensorData[], forecastData: SensorData[], dataType: 'temperature' | 'humidity' | 'airQuality') {
+    const { title, chartColor } = config[dataType];
+    const forecastColor = config.forecastColor;
+
+    // Combine timestamps from both datasets for the x-axis
+    const allTimestamps = [
+      ...actualData.map(item => item.timestamp),
+      ...forecastData.map(item => item.timestamp)
+    ].sort();
+
+    const labels = allTimestamps.map(timestamp => {
+      const date = new Date(timestamp).toISOString().split("T")[1].split(".")[0];
+      return date;
+    });
+
+    // Create actual data dataset
+    const actualDataset = new Dataset(
+      `${title}`,
+      // Map values, using null for timestamps not in actualData
+      allTimestamps.map(timestamp => {
+        const dataPoint = actualData.find(item => item.timestamp === timestamp);
+        return dataPoint ? Number(dataPoint.value) : null;
       }),
       false,
       chartColor,
       0.4
     );
 
-    return new ChartData(labels, [dataset]);
+    // Create forecast data dataset
+    const forecastDataset = new Dataset(
+      `${title} (Prognose)`,
+      // Map values, using null for timestamps not in forecastData
+      allTimestamps.map(timestamp => {
+        const dataPoint = forecastData.find(item => item.timestamp === timestamp);
+        return dataPoint ? Number(dataPoint.value) : null;
+      }),
+      false,
+      forecastColor,
+      0.4
+    );
+
+    return new ChartData(labels, [actualDataset, forecastDataset]);
   }
 }
 

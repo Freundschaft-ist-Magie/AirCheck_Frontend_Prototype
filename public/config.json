@@ -19,5 +19,6 @@
     "icon": "mdi:air-filter",
     "normalRange": "> 2000 ppm",
     "chartColor": "#3357FF"
-  }
+  },
+  "forecastColor": "#000"
 }
