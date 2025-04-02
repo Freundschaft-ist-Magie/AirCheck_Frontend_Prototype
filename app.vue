@@ -3,7 +3,7 @@ import { useAuthStore } from "@/utils/stores/base/AuthStore";
 
 const authStore = useAuthStore();
 
-const layout = authStore.isAuthenticated ? "not-logged-in" : "default";
+const layout = authStore.isAuthenticated ? "default" : "not-logged-in";
 </script>
 
 <template>

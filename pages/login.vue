@@ -10,6 +10,8 @@ const router = useRouter();
 
 const authStore = useAuthStore();
 
+const isClient = () => typeof window !== 'undefined';
+
 // Mock authentication function
 const mockLogin = async (email, password) => {
   // Simulate API delay
@@ -39,12 +41,13 @@ const handleLogin = async () => {
 
     const userData = await mockLogin(email.value, password.value);
 
-    authStore.setTokens(userData.accessToken, userData.refreshToken);
-    authStore.setRole(userData.role);
+    if (isClient()) {
+      authStore.setTokens(userData.accessToken, userData.refreshToken);
+      authStore.setRole(userData.role);
 
-    console.log("Login successful - User role: admin");
-
-    router.push("/");
+      console.log("Login successful - User role: admin");
+      router.push("/");
+    }
   } catch (err) {
     error.value = "Login fehlgeschlagen. Bitte versuchen Sie es erneut.";
     console.error("Login error:", err);
