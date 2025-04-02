@@ -8,9 +8,9 @@ const togglePopover = (event: Event) => {
 
 const panelLinks = [
   { to: "/", text: "AirCheck Dashboard", icon: "view-dashboard" },
+  { to: "/forecast/dashboard", text: "Prognose Dashboard", icon: "chart-line" },
   { to: "/user/settings", text: "Nutzer Einstellungen", icon: "cog" },
   { to: "/admin/dashboard", text: "Admin Dashboard", icon: "lock" },
-  { to: "/forecast/dashboard", text: "Prognose Dashboard", icon: "chart-line" },
   { to: "/login", text: "Login", icon: "login" },
 ];
 </script>
