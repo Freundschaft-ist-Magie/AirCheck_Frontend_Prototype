@@ -38,15 +38,15 @@ class GlobalHelper {
     const { title, chartColor } = config.temperature;
     const forecastColor = config.forecastColor;
 
-    const labels = temperature.map((temperature) => {
-      const date = new Date(temperature.timestamp).toISOString().split("T")[1].split(".")[0];
+    const labels = temperature.map((reading) => {
+      const date = new Date(reading.timestamp).toISOString().split("T")[1].split(".")[0];
       return date;
     });
 
     const dataset = new Dataset(
       title,
-      temperature.map((temperature) => {
-        return Number(temperature.value);
+      temperature.map((reading) => {
+        return Number(reading.value);
       }),
       false,
       isForecast ? forecastColor : chartColor,
@@ -60,15 +60,15 @@ class GlobalHelper {
     const { title, chartColor } = config.humidity;
     const forecastColor = config.forecastColor;
 
-    const labels = humidity.map((humidity) => {
-      const date = new Date(humidity.timestamp).toISOString().split("T")[1].split(".")[0];
+    const labels = humidity.map((reading) => {
+      const date = new Date(reading.timestamp).toISOString().split("T")[1].split(".")[0];
       return date;
     });
 
     const dataset = new Dataset(
       title,
-      humidity.map((humidity) => {
-        return Number(humidity.value);
+      humidity.map((reading) => {
+        return Number(reading.value);
       }),
       false,
       isForecast ? forecastColor : chartColor,
@@ -82,15 +82,15 @@ class GlobalHelper {
     const { title, chartColor } = config.airQuality;
     const forecastColor = config.forecastColor;
 
-    const labels = airQuality.map((airQuality) => {
-      const date = new Date(airQuality.timestamp).toISOString().split("T")[1].split(".")[0];
+    const labels = airQuality.map((reading) => {
+      const date = new Date(reading.timestamp).toISOString().split("T")[1].split(".")[0];
       return date;
     });
 
     const dataset = new Dataset(
       title,
-      airQuality.map((airQuality) => {
-        return Number(airQuality.value);
+      airQuality.map((reading) => {
+        return Number(reading.value);
       }),
       false,
       isForecast ? forecastColor : chartColor,
