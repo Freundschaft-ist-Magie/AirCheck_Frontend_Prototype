@@ -1,35 +1,58 @@
 <script lang="ts" setup>
+import { useAuthStore } from "@/utils/stores/base/AuthStore";
+
+// Form data
+const email = ref("");
+const password = ref("");
+const error = ref("");
+const loading = ref(false);
 const router = useRouter();
 
-const loginData = ref({
-  email: "",
-  password: "",
-  rememberMe: false,
-});
+const authStore = useAuthStore();
 
-function login() {
+const isClient = () => typeof window !== 'undefined';
+
+// Mock authentication function
+const mockLogin = async (email, password) => {
+  // Simulate API delay
+  loading.value = true;
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+  loading.value = false;
+
+  // Mock successful login with admin role
+  return {
+    id: "Dh42-das2-8pw6-Qn7C",
+    username: "Admin User",
+    email: email,
+    role: "admin",
+    accessToken: "mock-access-token-12345",
+    refreshToken: "mock-refresh-token-67890",
+  };
+};
+
+const handleLogin = async () => {
   try {
-    const response = fetch("/api/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(loginData.value),
-    });
+    error.value = "";
 
-    if (!response.ok) {
-      throw new Error("Login failed.");
+    if (!email.value || !password.value) {
+      error.value = "Bitte E-Mail und Passwort eingeben";
+      return;
     }
 
-    const data = response.json();
-    console.log("Login successful:", data);
+    const userData = await mockLogin(email.value, password.value);
 
-    router.push("/");
-  } catch (error) {
-    console.error("Error during login:", error);
-    alert("Login failed. Please try again.");
+    if (isClient()) {
+      authStore.setTokens(userData.accessToken, userData.refreshToken);
+      authStore.setRole(userData.role);
+
+      console.log("Login successful - User role: admin");
+      router.push("/");
+    }
+  } catch (err) {
+    error.value = "Login fehlgeschlagen. Bitte versuchen Sie es erneut.";
+    console.error("Login error:", err);
   }
-}
+};
 </script>
 
 <template>
@@ -41,14 +64,14 @@ function login() {
 
       <h2 class="text-center text-xl text-black font-semibold mt-2">Login</h2>
 
-      <form @submit.prevent="login" class="flex flex-col gap-2">
+      <form @submit.prevent="handleLogin" class="flex flex-col gap-2">
         <div>
-          <label for="username_label">E-Mail</label>
+          <label for="email_label">E-Mail</label>
           <InputText
             type="email"
-            id="username_label"
+            id="email_label"
             class="w-full"
-            v-model="loginData.email"
+            v-model="email"
             required
             placeholder="max.mustermann@muster.com"
           />
@@ -56,14 +79,19 @@ function login() {
 
         <div>
           <label for="password_label">Password</label>
-          <InputText
-            type="email"
+          <Password
             id="password_label"
+            v-model="password"
+            toggleMask
+            :feedback="false"
+            placeholder="Passwort eingeben"
             class="w-full"
-            v-model="loginData.password"
-            required
-            placeholder="********"
+            inputClass="w-full"
           />
+        </div>
+
+        <div v-if="error" class="text-red-500 text-sm">
+          {{ error }}
         </div>
 
         <NuxtLink to="/" class="text-sm text-black underline hover:no-underline">
@@ -76,6 +104,7 @@ function login() {
           type="submit"
           severity="info"
           class="w-full text-white! bg-primary1! hover:bg-primary2/80! active:bg-primary2!"
+          :loading="loading"
         />
       </form>
     </div>

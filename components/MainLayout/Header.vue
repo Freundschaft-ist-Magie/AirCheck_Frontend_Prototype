@@ -1,4 +1,7 @@
 <script lang="ts" setup>
+import { useAuthStore } from "~/utils/stores/base/AuthStore";
+
+const authStore = useAuthStore();
 const popoverPanel = ref();
 const isServerOnline = ref(false);
 
@@ -6,13 +9,22 @@ const togglePopover = (event: Event) => {
   popoverPanel.value.toggle(event);
 };
 
-const panelLinks = [
-  { to: "/", text: "AirCheck Dashboard", icon: "view-dashboard" },
-  { to: "/forecast/dashboard", text: "Prognose Dashboard", icon: "chart-line" },
-  { to: "/user/settings", text: "Nutzer Einstellungen", icon: "cog" },
-  { to: "/admin/dashboard", text: "Admin Dashboard", icon: "lock" },
-  { to: "/login", text: "Login", icon: "login" },
-];
+const panelLinks = computed(() => {
+  const links = [
+    { to: "/", text: "AirCheck Dashboard", icon: "view-dashboard" },
+    { to: "/forecast/dashboard", text: "Prognose Dashboard", icon: "chart-line" },
+    { to: "/user/settings", text: "Nutzer Einstellungen", icon: "cog" },
+  ];
+
+  // Only show admin dashboard link if user has admin role
+  if (authStore.role === "admin") {
+    links.push({ to: "/admin/dashboard", text: "Admin Dashboard", icon: "lock" });
+  }
+
+  links.push({ to: "/logout", text: "Logout", icon: "logout" });
+
+  return links;
+});
 </script>
 
 <template>
@@ -49,12 +61,13 @@ const panelLinks = [
         <OverlayPanel ref="popoverPanel" id="popoverPanel">
           <div class="flex flex-col gap-2 p-2">
             <NuxtLink
-              v-for="panelLink in panelLinks"
-              :to="panelLink.to"
+              v-for="link in panelLinks"
+              :key="link.to"
+              :to="link.to"
               class="flex items-center gap-2 text-left hover:bg-gray1/60 px-4 py-2 rounded-md"
             >
-              <Icon :name="`mdi-light:${panelLink.icon}`" class="w-5 h-5" />
-              <span>{{ panelLink.text }}</span>
+              <Icon :name="`mdi-light:${link.icon}`" class="w-5 h-5" />
+              <span>{{ link.text }}</span>
             </NuxtLink>
           </div>
         </OverlayPanel>
