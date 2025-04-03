@@ -1,142 +1,174 @@
 <script setup lang="ts">
+import { useToastStore } from "~/utils/stores/base/ToastStore";
 
-const roles = ref([{
-  "id": 1,
-  "name": "Administrator",
-  "users": 12,
-  "permissions": "Full Access"
-},
+const roles = ref([
   {
-    "id": 2,
-    "name": "Users",
-    "users": 2,
-    "permissions": "Read Access"
-  }
-])
+    id: 1,
+    name: "Administrator",
+    users: 12,
+    permissions: "Full Access",
+  },
+  {
+    id: 2,
+    name: "Users",
+    users: 2,
+    permissions: "Read Access",
+  },
+]);
 
 const confirm = useConfirm();
-const toast = useToast();
+const toastStore = useToastStore();
 
-const rolesEditShowEdit = ref(false)
+const rolesEditShowEdit = ref(false);
 const rolesEditData = ref({
   name: "",
   permissions: "",
   id: 0,
-})
-
-const selectRow = (data: Object) => {
-  toast.add({ severity: 'info', summary: data.name, detail: data.permissions, life: 3000 });
-};
+});
 
 const addRole = (data: Object) => {
-  toast.add({ severity: 'success', summary: "Hinzugefügt", detail: "Eine neue Rolle wurde hinzugefügt", life: 3000 });
+  toastStore.setToast("success", "Hinzugefügt", "Eine neue Rolle wurde hinzugefügt");
   roles.value.push({
     name: "Added Role",
     users: 0,
-    "permissions": "None",
-    id: Math.floor(Math.random() * 9999)
-  })
-}
+    permissions: "None",
+    id: Math.floor(Math.random() * 9999),
+  });
+};
 
 const prefillEditRole = (data: Object) => {
-  rolesEditData.value.name = data.name
-  rolesEditData.value.permissions = data.permissions
-  rolesEditData.value.id = data.id
+  rolesEditData.value.name = data.name;
+  rolesEditData.value.permissions = data.permissions;
+  rolesEditData.value.id = data.id;
 
-  rolesEditShowEdit.value = true
-
-}
+  rolesEditShowEdit.value = true;
+};
 
 const editRole = () => {
-  const updatedRole = rolesEditData.value
-  const index = roles.value.findIndex(role => role.id === updatedRole.id)
+  const updatedRole = rolesEditData.value;
+  const index = roles.value.findIndex((role) => role.id === updatedRole.id);
+  let severity = "error";
 
   if (index !== -1) {
-    roles.value[index] = { ...roles.value[index], ...updatedRole }
-    toast.add({ severity: 'success', summary: "Edited", detail: "Die Rolle wurde geändert.", life: 3000 })
+    roles.value[index] = { ...roles.value[index], ...updatedRole };
+    severity = "success";
   } else {
-    toast.add({ severity: 'warn', summary: "Edited", detail: "Die Rolle konnte nicht gefunden werden.", life: 3000 })
+    severity = "warn";
   }
 
-  rolesEditShowEdit.value = false
-}
-
+  toastStore.setToast(
+    "success",
+    "Erfolgreich",
+    "Die Rolle wurde erfolgreich bearbeitet."
+  );
+  rolesEditShowEdit.value = false;
+};
 
 const deleteRole = (data: Object) => {
   confirm.require({
     message: 'Do you want to delete the "' + data.name + '" role?',
-    header: 'Danger Zone',
-    icon: 'pi pi-info-circle',
-    rejectLabel: 'Cancel',
+    header: "Danger Zone",
+    icon: "pi pi-info-circle",
+    rejectLabel: "Cancel",
     rejectProps: {
-      label: 'Cancel',
-      severity: 'secondary',
-      outlined: true
+      label: "Cancel",
+      severity: "secondary",
+      outlined: true,
     },
     acceptProps: {
-      label: 'Delete',
-      severity: 'danger'
+      label: "Delete",
+      severity: "danger",
     },
     accept: () => {
-      toast.add({ severity: 'info', summary: 'Confirmed', detail: 'Record deleted', life: 3000 });
+      toastStore.setToast(
+        "success",
+        "Erfolgreich",
+        "Die Rolle wurde erfolgreich gelöscht."
+      );
 
-      const index = roles.value.findIndex(role => role.name === data.name)
+      const index = roles.value.findIndex((role) => role.name === data.name);
       if (index !== -1) {
-        roles.value.splice(index, 1)
+        roles.value.splice(index, 1);
       }
-
     },
     reject: () => {
-      toast.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected', life: 3000 });
-    }
+      toastStore.setToast("warn", "Abgebrochen", "Die Aktion wurde abgebrochen.");
+    },
   });
-}
+};
 </script>
 
 <template>
   <DataTable :value="roles" tableStyle="min-width: 50rem">
     <template #header>
-              <span class="flex justify-end">
-                  <Button text icon="" @click="addRole" rounded>
-                    <Icon class="text-2xl" name="mdi-light:plus" />
-                  </Button>
-              </span>
+      <div class="flex justify-end">
+        <Button text icon="" @click="addRole" rounded>
+          <Icon class="text-2xl" name="mdi:plus" />
+        </Button>
+      </div>
     </template>
-    <Column field="name" header="Role Name"></Column>
-    <Column field="users" header="Users"></Column>
-    <Column field="permissions" header="Permissions"></Column>
-    <Column class="w-24 !text-end">
+    <Column field="name" header="Rolle"></Column>
+    <Column field="users" header="Anz. Benutzer"></Column>
+    <Column field="permissions" header="Berechtigungen"></Column>
+
+    <Column>
       <template #body="{ data }">
-        <div class="flex items-center justify-between gap-2">
-          <Button icon="" @click="prefillEditRole(data)" severity="secondary" rounded>
-            <Icon name="mdi-light:pencil" />
+        <div class="flex items-center justify-end gap-2">
+          <Button
+            @click="prefillEditRole(data)"
+            severity="info"
+            rounded
+            class="bg-primary1! hover:bg-primary2/80! active:bg-primary2!"
+          >
+            <Icon name="mdi:pencil" />
           </Button>
-          <Button icon="" @click="deleteRole(data)" severity="danger" rounded>
-            <Icon name="mdi-light:delete" />
+          <Button @click="deleteRole(data)" severity="danger" rounded>
+            <Icon name="mdi:delete" />
           </Button>
         </div>
       </template>
     </Column>
   </DataTable>
-  <Toast />
 
-  <Dialog v-model:visible="rolesEditShowEdit" modal header="Edit Profile" :style="{ width: '25rem' }">
-    <span class="text-surface-500 dark:text-surface-400 block mb-8">Update your information.</span>
+  <!--
+  <Dialog
+    v-model:visible="rolesEditShowEdit"
+    modal
+    header="Edit Profile"
+    :style="{ width: '25rem' }"
+  >
+    <span class="text-surface-500 dark:text-surface-400 block mb-8"
+      >Update your information.</span
+    >
     <div class="flex items-center gap-4 mb-4">
       <label for="name" class="font-semibold w-24">Role Name</label>
-      <InputText id="name" class="flex-auto" autocomplete="off" v-model="rolesEditData.name"  />
+      <InputText
+        id="name"
+        class="flex-auto"
+        autocomplete="off"
+        v-model="rolesEditData.name"
+      />
     </div>
     <div class="flex items-center gap-4 mb-8">
       <label for="permissions" class="font-semibold w-24">Permissions</label>
-      <InputText id="permissions" class="flex-auto" autocomplete="off" v-model="rolesEditData.permissions" />
+      <InputText
+        id="permissions"
+        class="flex-auto"
+        autocomplete="off"
+        v-model="rolesEditData.permissions"
+      />
     </div>
     <div class="flex justify-end gap-2">
-      <Button type="button" label="Cancel" severity="secondary" @click="rolesEditShowEdit = false"></Button>
+      <Button
+        type="button"
+        label="Cancel"
+        severity="secondary"
+        @click="rolesEditShowEdit = false"
+      ></Button>
       <Button type="button" label="Save" @click="editRole()"></Button>
     </div>
   </Dialog>
+  -->
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
