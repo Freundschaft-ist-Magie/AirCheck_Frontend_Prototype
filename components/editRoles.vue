@@ -17,15 +17,13 @@ const dialog = useDialog();
 
 // ignore
 /* const confirm = useConfirm(); */
-// ignore
-const addRole = (data: Object) => {
-  toastStore.setToast("success", "Hinzugefügt", "Eine neue Rolle wurde hinzugefügt");
-  /* roles.value.push({
-    name: "Added Role",
-    users: 0,
-    permissions: "None",
-    id: Math.floor(Math.random() * 9999),
-  }); */
+
+const addRole = () => {
+  editRole({
+    id: 0, // id 0 will trigger 'create' inside UpdateRole
+    name: "",
+    permissions: "",
+  });
 };
 
 function editRole(role: { id: number; name: string; permissions: string }) {

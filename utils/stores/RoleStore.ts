@@ -20,11 +20,39 @@ export const useRoleStore = defineStore("role", () => {
     return roles.value;
   }
 
+  async function Create(role: { id: number; name: string; permissions: string }) {
+    try {
+      role.id = roles.value.length + 1;
+      roles.value.push(role);
+
+      useToastStore().setToast(
+        "success",
+        "Hinzugefügt",
+        "Rolle erfolgreich hinzugefügt."
+      );
+    } catch (e) {
+      console.error("Error, during creating a new Role");
+
+      useToastStore().setToast(
+        "danger",
+        "Fehler",
+        "Rolle konnte nicht hinzugefügt werden."
+      );
+    }
+  }
+
   async function UpdateRole(role: { id: number; name: string; permissions: string }) {
     const index = roles.value.findIndex(r => r.id === role.id);
 
+    // edit endpoint can be used to create
+    if (role.id === 0) {
+      await Create(role);
+      return
+    }
+
     if (index !== -1) {
       roles.value[index] = { ...roles.value[index], ...role };
+
       useToastStore().setToast(
         "success",
         "Aktualisiert",
@@ -33,6 +61,7 @@ export const useRoleStore = defineStore("role", () => {
       return roles.value[index];
     } else {
       console.error("Was not able to update Role with ID:", role.id);
+
       useToastStore().setToast(
         "danger",
         "Fehler",
