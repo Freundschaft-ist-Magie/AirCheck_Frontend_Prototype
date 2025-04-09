@@ -1,70 +1,57 @@
 <script setup lang="ts">
+import { useDialog } from "#imports";
 import { useToastStore } from "~/utils/stores/base/ToastStore";
+import { useRoleStore } from "~/utils/stores/RoleStore";
+import EditRole from "./Modal/EditRole.vue";
 
-const roles = ref([
-  {
-    id: 1,
-    name: "Administrator",
-    users: 12,
-    permissions: "Full Access",
-  },
-  {
-    id: 2,
-    name: "Users",
-    users: 2,
-    permissions: "Read Access",
-  },
-]);
+defineProps<{
+  roles: {
+    id: number;
+    name: string;
+    permissions: string;
+  }[];
+}>();
 
-const confirm = useConfirm();
 const toastStore = useToastStore();
+const dialog = useDialog();
 
-const rolesEditShowEdit = ref(false);
-const rolesEditData = ref({
-  name: "",
-  permissions: "",
-  id: 0,
-});
-
+// ignore
+/* const confirm = useConfirm(); */
+// ignore
 const addRole = (data: Object) => {
   toastStore.setToast("success", "Hinzugefügt", "Eine neue Rolle wurde hinzugefügt");
-  roles.value.push({
+  /* roles.value.push({
     name: "Added Role",
     users: 0,
     permissions: "None",
     id: Math.floor(Math.random() * 9999),
+  }); */
+};
+
+function editRole(role: { id: number; name: string; permissions: string }) {
+  dialog.open(EditRole, {
+    props: {
+      header: `${role.name} bearbeiten`,
+      style: { width: "50vw" },
+      modal: true,
+    },
+    data: {
+      role: role,
+    },
+    onClose: (options) => {
+      const result = options?.data;
+      if (result) {
+        useRoleStore().UpdateRole(result);
+      } else {
+        console.log("Abgebrochen oder geschlossen");
+      }
+    },
   });
-};
+}
 
-const prefillEditRole = (data: Object) => {
-  rolesEditData.value.name = data.name;
-  rolesEditData.value.permissions = data.permissions;
-  rolesEditData.value.id = data.id;
-
-  rolesEditShowEdit.value = true;
-};
-
-const editRole = () => {
-  const updatedRole = rolesEditData.value;
-  const index = roles.value.findIndex((role) => role.id === updatedRole.id);
-  let severity = "error";
-
-  if (index !== -1) {
-    roles.value[index] = { ...roles.value[index], ...updatedRole };
-    severity = "success";
-  } else {
-    severity = "warn";
-  }
-
-  toastStore.setToast(
-    "success",
-    "Erfolgreich",
-    "Die Rolle wurde erfolgreich bearbeitet."
-  );
-  rolesEditShowEdit.value = false;
-};
-
+// ignore
 const deleteRole = (data: Object) => {
+  /*
   confirm.require({
     message: 'Do you want to delete the "' + data.name + '" role?',
     header: "Danger Zone",
@@ -95,6 +82,7 @@ const deleteRole = (data: Object) => {
       toastStore.setToast("warn", "Abgebrochen", "Die Aktion wurde abgebrochen.");
     },
   });
+  */
 };
 </script>
 
@@ -107,15 +95,18 @@ const deleteRole = (data: Object) => {
         </Button>
       </div>
     </template>
+    <Column field="id" header="ID"></Column>
     <Column field="name" header="Rolle"></Column>
+    <!--
     <Column field="users" header="Anz. Benutzer"></Column>
+    -->
     <Column field="permissions" header="Berechtigungen"></Column>
 
     <Column>
       <template #body="{ data }">
         <div class="flex items-center justify-end gap-2">
           <Button
-            @click="prefillEditRole(data)"
+            @click="editRole(data)"
             severity="info"
             rounded
             class="bg-primary1! hover:bg-primary2/80! active:bg-primary2!"
@@ -129,46 +120,4 @@ const deleteRole = (data: Object) => {
       </template>
     </Column>
   </DataTable>
-
-  <!--
-  <Dialog
-    v-model:visible="rolesEditShowEdit"
-    modal
-    header="Edit Profile"
-    :style="{ width: '25rem' }"
-  >
-    <span class="text-surface-500 dark:text-surface-400 block mb-8"
-      >Update your information.</span
-    >
-    <div class="flex items-center gap-4 mb-4">
-      <label for="name" class="font-semibold w-24">Role Name</label>
-      <InputText
-        id="name"
-        class="flex-auto"
-        autocomplete="off"
-        v-model="rolesEditData.name"
-      />
-    </div>
-    <div class="flex items-center gap-4 mb-8">
-      <label for="permissions" class="font-semibold w-24">Permissions</label>
-      <InputText
-        id="permissions"
-        class="flex-auto"
-        autocomplete="off"
-        v-model="rolesEditData.permissions"
-      />
-    </div>
-    <div class="flex justify-end gap-2">
-      <Button
-        type="button"
-        label="Cancel"
-        severity="secondary"
-        @click="rolesEditShowEdit = false"
-      ></Button>
-      <Button type="button" label="Save" @click="editRole()"></Button>
-    </div>
-  </Dialog>
-  -->
 </template>
-
-<style scoped></style>

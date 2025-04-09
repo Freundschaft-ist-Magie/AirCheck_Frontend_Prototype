@@ -1,49 +1,40 @@
 <script setup lang="ts">
 import EditRoles from "~/components/editRoles.vue";
+import { useRoleStore } from "~/utils/stores/RoleStore";
 
-const isModalOpen = ref(true);
-const closeModal = () => {
-  isModalOpen.value = false;
-};
+const roles = ref<
+  {
+    id: number;
+    name: string;
+    permissions: string;
+  }[]
+>([]);
+
+onMounted(async () => {
+  roles.value = await useRoleStore().GetAll();
+});
 </script>
 
 <template>
-  <div class="w-1/2 mx-auto flex flex-col gap-4">
-    <div class="mt-6 border-b border-gray2 my-4">
-      <Modal
-        :title="'Edit'"
-        :visible="isModalOpen"
-        @cancel="closeModal"
-        @save="closeModal"
-      >
-        <span class="text-surface-500 dark:text-surface-400 block mb-8"
-          >Update your information.</span
-        >
-        <div class="flex items-center gap-4 mb-4">
-          <label for="username" class="font-semibold w-24">Username</label>
-          <InputText id="username" class="flex-auto" autocomplete="off" />
-        </div>
-        <div class="flex items-center gap-4 mb-8">
-          <label for="email" class="font-semibold w-24">Email</label>
-          <InputText id="email" class="flex-auto" autocomplete="off" />
-        </div>
-      </Modal>
+  <div class="container mx-auto flex flex-col gap-4 p-4">
+    <div class="mt-6 border-b border-gray-300 pb-4 mb-4">
+      <h1 class="text-2xl font-semibold mb-4">Admin Dashboard</h1>
 
-      <Accordion value="0">
+      <Accordion :multiple="true" :activeIndex="[0]">
         <AccordionPanel value="0">
-          <AccordionHeader>Manage Roles</AccordionHeader>
+          <AccordionHeader>Rollen verwalten</AccordionHeader>
           <AccordionContent>
-            <edit-roles />
+            <edit-roles :roles="roles" />
           </AccordionContent>
         </AccordionPanel>
         <AccordionPanel value="1">
-          <AccordionHeader>Manage Users</AccordionHeader>
+          <AccordionHeader>Nutzer verwalten</AccordionHeader>
           <AccordionContent>
             <edit-users />
           </AccordionContent>
         </AccordionPanel>
         <AccordionPanel value="2">
-          <AccordionHeader>Manage Devices</AccordionHeader>
+          <AccordionHeader>Räume verwalten</AccordionHeader>
           <AccordionContent>
             <edit-devices />
           </AccordionContent>
