@@ -26,7 +26,7 @@ const editData = ref({
 })
 
 const selectRow = (data: Object) => {
-  toast.add({ severity: 'info', summary: data.name, detail: data.email, life: 3000 });
+  toast.add({ severity: 'info', summary: data.name, detail: data.assigned_user, life: 3000 });
 };
 
 const addEntry = (data: Object) => {
