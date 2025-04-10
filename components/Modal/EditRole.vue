@@ -4,13 +4,13 @@ const dialogRef = inject("dialogRef");
 const originalRole = dialogRef?.value?.data?.role ?? {
   id: 0,
   name: "",
-  permission: "",
+  permissions: "",
 };
 
 const role = reactive({
   id: originalRole.id,
   name: originalRole.name,
-  permission: originalRole.permission,
+  permissions: originalRole.permissions,
 });
 
 const permissions = ref([{ name: "Benutzer" }, { name: "Administrator" }]);
