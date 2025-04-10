@@ -126,7 +126,7 @@ class GlobalHelper {
   public static MapHistoryChartDataHumidity(history: any, room: any) {
     const { title, chartColor } = config.humidity;
 
-    // Shoudn't be hardcoded :(
+    // Shouldn't be hardcoded :(
     const selectedRoom = history.find(historyRoom => historyRoom.id === room.id).environmentData.humidity;
 
     const labels = selectedRoom.map((reading) => {
