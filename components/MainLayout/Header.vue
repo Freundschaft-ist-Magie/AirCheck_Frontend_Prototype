@@ -39,10 +39,17 @@ const panelLinks = computed(() => {
 
 <template>
   <div class="bg-gray2 p-4 flex justify-between items-center rounded-md">
-    <div class="flex justify-center items-center gap-4">
-      <Icon name="mdi:air-conditioner" class="text-3xl text-primary2" />
-      <span class="text-2xl font-bold text-primary2"> AirCheck Dashboard </span>
-    </div>
+    <Button
+      severity="secondary"
+      class="p-0 bg-transparent! border-0!"
+      aria-haspopup="true"
+      aria-controls="navLinksPanel"
+    >
+      <NuxtLink to="/" class="flex justify-center items-center gap-4">
+        <Icon name="mdi:air-conditioner" class="text-3xl text-primary2" />
+        <span class="text-2xl font-bold text-primary2"> AirCheck Dashboard </span>
+      </NuxtLink>
+    </Button>
 
     <div class="flex items-center gap-4 space-x-2 text-black">
       <div class="flex gap-2 items-center">
