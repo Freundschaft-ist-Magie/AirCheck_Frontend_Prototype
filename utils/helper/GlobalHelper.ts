@@ -150,7 +150,7 @@ class GlobalHelper {
   public static MapHistoryChartDataAirQuality(history: any, room: any) {
     const { title, chartColor } = config.airQuality;
 
-    // Shoudn't be hardcoded :(
+    // Shouldn't be hardcoded :(
     const selectedRoom = history.find(historyRoom => historyRoom.id === room.id).environmentData.airQuality;
 
     const labels = selectedRoom.map((reading) => {
