@@ -198,6 +198,7 @@ onMounted(async () => {
             :title="selectedMetric"
             :chartData="currentChart.data"
             :chartOptions="currentChart.options"
+            chartType="line"
           />
         </div>
         <div v-else class="flex items-center justify-center h-40">
