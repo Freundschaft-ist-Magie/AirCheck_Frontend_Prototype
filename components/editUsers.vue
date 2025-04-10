@@ -85,6 +85,7 @@ function deleteUser(user: {
         </Button>
       </span>
     </template>
+    <Column field="id" header="ID"></Column>
     <Column field="name" header="User Name"></Column>
     <Column field="email" header="Email"></Column>
     <Column header="Roles">
