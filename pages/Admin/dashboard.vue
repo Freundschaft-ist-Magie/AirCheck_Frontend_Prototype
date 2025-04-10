@@ -3,22 +3,26 @@ import EditRoles from "~/components/editRoles.vue";
 import { useRoleStore } from "~/utils/stores/RoleStore";
 import { useUserStore } from "~/utils/stores/UserStore";
 
-const roles = ref<{
-  id: number;
-  name: string;
-  permissions: string;
-}[]>([]);
-
-const users = ref<{
-  id: number;
-  name: string;
-  email: string;
-  roles: {
+const roles = ref<
+  {
     id: number;
     name: string;
     permissions: string;
-  }[];
-}[]>([]);
+  }[]
+>([]);
+
+const users = ref<
+  {
+    id: number;
+    name: string;
+    email: string;
+    roles: {
+      id: number;
+      name: string;
+      permissions: string;
+    }[];
+  }[]
+>([]);
 
 onMounted(async () => {
   roles.value = await useRoleStore().GetAll();
@@ -44,12 +48,14 @@ onMounted(async () => {
             <edit-users :roles="roles" :users="users" />
           </AccordionContent>
         </AccordionPanel>
+        <!--
         <AccordionPanel value="2">
           <AccordionHeader>Räume verwalten</AccordionHeader>
           <AccordionContent>
             <edit-devices />
           </AccordionContent>
         </AccordionPanel>
+        -->
       </Accordion>
     </div>
   </div>
