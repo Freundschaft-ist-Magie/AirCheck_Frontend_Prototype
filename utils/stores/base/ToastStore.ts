@@ -1,20 +1,19 @@
 import { defineStore } from "pinia";
+import { useToast } from "#imports";
 
-export const useToastStore = defineStore("toast", {
-  state: () => ({
-    message: "",
-    show: false,
-    color: "light",
-  }),
-  actions: {
-    setToast(message: string, color: string = "light") {
-      this.message = message;
-      this.show = true;
-      this.color = color;
-    },
-    hideToast() {
-      this.message = "";
-      this.show = false;
-    }
+export const useToastStore = defineStore("toast", () => {
+  const toast = useToast();
+
+  function setToast(severity: string, summary: string, detail: string) {
+    toast.add({
+      severity: severity,
+      summary: summary,
+      detail: detail,
+      life: 3000,
+    });
   }
+
+  return {
+    setToast,
+  };
 });

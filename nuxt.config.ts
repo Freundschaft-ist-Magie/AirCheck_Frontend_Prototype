@@ -24,7 +24,7 @@ export default defineNuxtConfig({
         preset: Aura,
         options: {
           prefix: 'p',
-          darkModeSelector: 'light', /* 'system' */
+          darkModeSelector: 'light',
           cssLayer: false
         }
       }

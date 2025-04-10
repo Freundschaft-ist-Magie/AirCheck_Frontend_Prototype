@@ -10,6 +10,9 @@ const layout = authStore.isAuthenticated ? "default" : "not-logged-in";
   <div>
     <NuxtLayout :name="layout">
       <NuxtLoadingIndicator :color="'#fff'" />
+      <Toast />
+      <DynamicDialog />
+      <ConfirmDialog></ConfirmDialog>
       <NuxtPage />
     </NuxtLayout>
   </div>
