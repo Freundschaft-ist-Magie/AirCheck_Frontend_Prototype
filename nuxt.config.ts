@@ -24,10 +24,18 @@ export default defineNuxtConfig({
         preset: Aura,
         options: {
           prefix: 'p',
-          darkModeSelector: 'system',
+          darkModeSelector: 'light',
           cssLayer: false
         }
       }
+    }
+  },
+
+  // For Nuxt 3, global middleware should be in the app directory
+  // We'll create a plugin to handle the auth logic globally instead of using routeRules
+  routeRules: {
+    '/login': {
+      // Login page specific rules if needed
     }
   }
 })

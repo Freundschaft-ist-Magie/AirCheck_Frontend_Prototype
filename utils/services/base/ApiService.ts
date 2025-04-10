@@ -1,5 +1,5 @@
 import { useAuthStore } from "~/utils/stores/base/AuthStore";
-import { useToastStore } from "@/utils/stores/base/ToastStore";
+import { useToastStore } from "~/utils/stores/base/ToastStore";
 import StorageService from "./StorageService";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;

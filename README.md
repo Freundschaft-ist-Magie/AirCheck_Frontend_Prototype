@@ -1,3 +1,13 @@
+# Ideas
+
+- Toast Service
+- Notification Service (Linked to Toast Service)
+- Audit Log?
+- Better Design Colors?
+- Fix UI
+- Full view for charts (Modal with 1D, 7D, 3M, Views)
+- Inspira UI?
+
 # Nuxt Minimal Starter
 
 Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
