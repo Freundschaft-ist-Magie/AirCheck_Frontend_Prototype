@@ -15,6 +15,13 @@ class RoomsService {
 
     return forecasts;
   }
+
+  public async GetHistory() {
+    // here should be a call to the API to get the temperature, we use the mock data for now
+    const rooms: Room[] = await get("/mocks/history.json");
+
+    return rooms;
+  }
 }
 
 export default RoomsService;

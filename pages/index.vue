@@ -11,15 +11,22 @@ const selectedRoom = ref<Room | null>(null);
 const rooms = ref<Room[]>([]);
 const cards = ref<StatisticCardObj[]>([]);
 const charts = ref<{ data: ChartData; options: ChartOptions }[]>([]);
+const historyCharts = ref<{ data: ChartData; options: ChartOptions }[]>([]);
 const chartTitles = ref([
   "Temperatur in den letzten 24 h",
   "Luftfeuchtigkeit in den letzten 24 h",
   "CO2 Level in den letzten 24 h",
 ]);
+const monthChartTitles = ref([
+  "Temperatur in den letzten 30 Tagen",
+  "Luftfeuchtigkeit in den letzten 30 Tagen",
+  "CO2 Level in den letzten 30 Tagen",
+]);
 
 onMounted(async () => {
   const roomsService = new RoomsService();
   const fetchedRooms = await roomsService.Get();
+  const fetchedHistory = await roomsService.GetHistory();
 
   // Update rooms with fetched data
   rooms.value = fetchedRooms.map((room: any) => {
@@ -60,6 +67,21 @@ onMounted(async () => {
     selectedRoom.value.environmentData.airQuality
   );
 
+  // set history diagram data
+  const temperatureHistoryData = GlobalHelper.MapHistoryChartDataTemperature(
+      fetchedHistory,
+      selectedRoom.value
+  )
+  const humidityHistoryData = GlobalHelper.MapHistoryChartDataHumidity(
+      fetchedHistory,
+      selectedRoom.value
+  )
+  const airQualityHistoryData = GlobalHelper.MapHistoryChartDataAirQuality(
+      fetchedHistory,
+      selectedRoom.value
+  );
+
+
   const chartOptions = new ChartOptions();
 
   cards.value.push(cardTemperature, cardHumidity, cardAirQuality);
@@ -68,6 +90,12 @@ onMounted(async () => {
     { data: humidityData, options: chartOptions },
     { data: airQualityData, options: chartOptions }
   );
+
+  historyCharts.value.push(
+      { data: temperatureHistoryData, options: chartOptions },
+      { data: humidityHistoryData, options: chartOptions },
+      { data: airQualityHistoryData, options: chartOptions }
+  )
 });
 </script>
 
@@ -96,6 +124,17 @@ onMounted(async () => {
       :title="chartTitles[index]"
       :chartData="chart.data"
       :chartOptions="chart.options"
+      chartType="line"
+    />
+  </div>
+  <div class="mt-4 grid grid-cols-2 gap-4">
+    <StatisticDiagram
+        v-for="(chart, index) in historyCharts"
+        :key="index"
+        :title="monthChartTitles[index]"
+        :chartData="chart.data"
+        :chartOptions="chart.options"
+        chartType="bar"
     />
   </div>
 </template>

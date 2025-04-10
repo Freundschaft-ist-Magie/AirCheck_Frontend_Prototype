@@ -100,6 +100,77 @@ class GlobalHelper {
     return new ChartData(labels, [dataset]);
   }
 
+  public static MapHistoryChartDataTemperature(history: any, room: any) {
+    const { title, chartColor } = config.temperature;
+
+    const selectedRoom = history.find(historyRoom => historyRoom.id === room.id).environmentData.temperature;
+
+    const labels = selectedRoom.map((reading) => {
+      const date = new Date(reading.timestamp).toISOString().split("T")[0];
+      return GlobalHelper.formatDateToDayMonth(date);
+    });
+
+    const dataset = new Dataset(
+        title,
+        selectedRoom.map((reading) => {
+          return Number(reading.value);
+        }),
+        false,
+        chartColor,
+        0
+    );
+
+    return new ChartData(labels, [dataset]);
+  }
+
+  public static MapHistoryChartDataHumidity(history: any, room: any) {
+    const { title, chartColor } = config.humidity;
+
+    // Shouldn't be hardcoded :(
+    const selectedRoom = history.find(historyRoom => historyRoom.id === room.id).environmentData.humidity;
+
+    const labels = selectedRoom.map((reading) => {
+      const date = new Date(reading.timestamp).toISOString().split("T")[0];
+      return GlobalHelper.formatDateToDayMonth(date);
+    });
+
+    const dataset = new Dataset(
+        title,
+        selectedRoom.map((reading) => {
+          return Number(reading.value);
+        }),
+        false,
+        chartColor,
+        0
+    );
+
+    return new ChartData(labels, [dataset]);
+  }
+
+  public static MapHistoryChartDataAirQuality(history: any, room: any) {
+    const { title, chartColor } = config.airQuality;
+
+    // Shouldn't be hardcoded :(
+    const selectedRoom = history.find(historyRoom => historyRoom.id === room.id).environmentData.airQuality;
+
+    const labels = selectedRoom.map((reading) => {
+      const date = new Date(reading.timestamp).toISOString().split("T")[0];
+      return GlobalHelper.formatDateToDayMonth(date);
+    });
+
+    const dataset = new Dataset(
+        title,
+        selectedRoom.map((reading) => {
+          return Number(reading.value);
+        }),
+        false,
+        chartColor,
+        0
+    );
+
+    return new ChartData(labels, [dataset]);
+  }
+
   public static MapCombinedChartData(actualData: SensorData[], forecastData: SensorData[], dataType: 'temperature' | 'humidity' | 'airQuality') {
     const { title, chartColor } = config[dataType];
     const forecastColor = config.forecastColor;
@@ -143,6 +214,15 @@ class GlobalHelper {
 
     return new ChartData(labels, [actualDataset, forecastDataset]);
   }
+
+  public static formatDateToDayMonth(timestamp: string): string {
+    const date = new Date(timestamp);
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = date.toLocaleString("de-DE", { month: "short" });
+    return `${day}. ${month}`;
+  }
+
+
 }
 
 export default GlobalHelper;
