@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useDialog } from "#imports";
-import { useToastStore } from "~/utils/stores/base/ToastStore";
+import { useConfirmStore } from "~/utils/stores/base/ConfirmStore";
 import { useRoleStore } from "~/utils/stores/RoleStore";
 import EditRole from "./Modal/EditRole.vue";
 
@@ -12,11 +12,7 @@ defineProps<{
   }[];
 }>();
 
-const toastStore = useToastStore();
 const dialog = useDialog();
-
-// ignore
-/* const confirm = useConfirm(); */
 
 const addRole = () => {
   editRole({
@@ -47,40 +43,19 @@ function editRole(role: { id: number; name: string; permissions: string }) {
   });
 }
 
-// ignore
-const deleteRole = (data: Object) => {
-  /*
-  confirm.require({
-    message: 'Do you want to delete the "' + data.name + '" role?',
-    header: "Danger Zone",
-    icon: "pi pi-info-circle",
-    rejectLabel: "Cancel",
-    rejectProps: {
-      label: "Cancel",
-      severity: "secondary",
-      outlined: true,
+const deleteRole = (role: { id: number; name: string; permissions: string }) => {
+  useConfirmStore().setConfirm(
+    `Bestätigen Sie, dass sie ${role.name} löschen wollten?`,
+    "Löschen bestätigen",
+    "pi pi-exclamation-triangle",
+    () => {
+      useRoleStore().Delete(role);
     },
-    acceptProps: {
-      label: "Delete",
-      severity: "danger",
-    },
-    accept: () => {
-      toastStore.setToast(
-        "success",
-        "Erfolgreich",
-        "Die Rolle wurde erfolgreich gelöscht."
-      );
-
-      const index = roles.value.findIndex((role) => role.name === data.name);
-      if (index !== -1) {
-        roles.value.splice(index, 1);
-      }
-    },
-    reject: () => {
-      toastStore.setToast("warn", "Abgebrochen", "Die Aktion wurde abgebrochen.");
-    },
-  });
-  */
+    () => {},
+    "Löschen",
+    "Abbrechen",
+    "danger"
+  );
 };
 </script>
 

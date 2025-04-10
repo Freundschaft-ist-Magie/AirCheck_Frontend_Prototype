@@ -71,5 +71,31 @@ export const useRoleStore = defineStore("role", () => {
     }
   }
 
-  return { Roles, GetAll, UpdateRole };
+  async function Delete(role: { id: number; name: string; permissions: string }) {
+    const index = roles.value.findIndex(r => r.id === role.id);
+
+    if (index !== -1) {
+      const removed = roles.value.splice(index, 1)[0];
+
+      useToastStore().setToast(
+        "success",
+        "Entfernt",
+        "Rolle erfolgreich entfernt."
+      );
+
+      return removed;
+    } else {
+      console.error("Not found Role with ID:", role.id);
+
+      useToastStore().setToast(
+        "danger",
+        "Fehler",
+        "Rolle konnte nicht gelöscht werden."
+      );
+
+      return null;
+    }
+  }
+
+  return { Roles, GetAll, Create, UpdateRole, Delete };
 });
