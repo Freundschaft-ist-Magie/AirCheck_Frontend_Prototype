@@ -4,6 +4,7 @@ import { useAuthStore } from "~/utils/stores/base/AuthStore";
 const authStore = useAuthStore();
 const navLinksPanel = ref();
 const notifPanel = ref();
+const serverStatusPopover = ref();
 const isServerOnline = ref(false);
 const userData = ref({
   // this will contain the current user's data
@@ -19,9 +20,14 @@ const toggleNotifPanel = (event: Event) => {
   notifPanel.value.toggle(event);
 };
 
+const toggleServerStatusPopover = (event: Event) => {
+  serverStatusPopover.value.toggle(event);
+};
+
 const panelLinks = computed(() => {
   const links = [
     { to: "/", text: "AirCheck Dashboard", icon: "view-dashboard" },
+    { to: "/notifications", text: "Benachrichtigungen", icon: "bell" },
     { to: "/forecast/dashboard", text: "Prognose Dashboard", icon: "chart-line" },
     { to: "/user/settings", text: "Nutzer Einstellungen", icon: "cog" },
   ];
@@ -41,18 +47,18 @@ const panelLinks = computed(() => {
   <div class="bg-gray2 p-4 flex justify-between items-center rounded-md">
     <Button
       severity="secondary"
-      class="p-0 bg-transparent! border-0!"
+      class="p-0! m-0! bg-transparent! border-0!"
       aria-haspopup="true"
       aria-controls="navLinksPanel"
     >
       <NuxtLink to="/" class="flex justify-center items-center gap-4">
-        <Icon name="mdi:air-conditioner" class="text-3xl text-primary2" />
-        <span class="text-2xl font-bold text-primary2"> AirCheck Dashboard </span>
+        <Icon name="mdi:air-conditioner" class="text-4xl text-primary2" />
+        <span class="hidden sm:block text-2xl font-bold text-primary2"> AirCheck </span>
       </NuxtLink>
     </Button>
 
     <div class="flex items-center gap-4 space-x-2 text-black">
-      <div class="flex gap-2 items-center">
+      <div class="relative flex gap-2 items-center" @click="toggleServerStatusPopover">
         <svg
           :class="isServerOnline ? 'text-green-500' : 'text-red-500'"
           class="w-3 h-3"
@@ -62,21 +68,20 @@ const panelLinks = computed(() => {
         >
           <circle cx="8" cy="8" r="8" />
         </svg>
-        <span>Server {{ isServerOnline ? "Online" : "Offline" }}</span>
+        <span class="text-base">{{ isServerOnline ? "Online" : "Offline" }}</span>
+        <i class="pi pi-question-circle"></i>
       </div>
+      <Popover ref="serverStatusPopover">
+        <span class="text-sm text-gray-500">
+          Zeigt an, ob der Server erreichbar ist oder nicht. Ist der Server nicht
+          erreichbar, werden die Daten nicht aktualisiert.
+        </span>
+      </Popover>
 
       <div class="flex gap-2 items-center">
         <Button
-          icon="pi pi-bell"
           severity="secondary"
-          class="bg-transparent! border-0! rounded-full!"
-          @click="toggleNotifPanel"
-          aria-haspopup="true"
-          aria-controls="notifPanel"
-        />
-        <Button
-          severity="secondary"
-          class="p-0 bg-transparent! border-0!"
+          class="p-0! m-0! bg-transparent! border-0!"
           @click="toggleNavLinksPanel"
           aria-haspopup="true"
           aria-controls="navLinksPanel"
@@ -86,15 +91,8 @@ const panelLinks = computed(() => {
             :src="userData.image"
             :alt="userData.name"
           />
-          <p>{{ userData.name }}</p>
-          <i class="pi pi-chevron-down text-sm" />
+          <p class="hidden sm:block">{{ userData.name }}</p>
         </Button>
-
-        <OverlayPanel ref="notifPanel" id="notifPanel">
-          <div class="flex flex-col gap-2 p-2">
-            <span>NOT IMPLEMENTED.</span>
-          </div>
-        </OverlayPanel>
 
         <OverlayPanel ref="navLinksPanel" id="navLinksPanel">
           <div class="flex flex-col gap-2 p-2">
