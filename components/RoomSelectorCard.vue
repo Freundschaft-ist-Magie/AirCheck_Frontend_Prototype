@@ -21,7 +21,7 @@ function formatDate(date: Date) {
 <template>
   <div class="mt-4 p-4 bg-white shadow-md rounded-md flex justify-between items-center">
     <div>
-      <room-selector
+      <RoomSelector
         :options="rooms"
         :placeholder="'Raum auswählen'"
         :filter-field="'name'"
