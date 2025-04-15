@@ -153,7 +153,7 @@ onMounted(async () => {
       <TabList>
         <Tab v-for="tab in tabs" :key="tab.title" :value="tab.value">{{ tab.title }}</Tab>
       </TabList>
-      <TabPanels>
+      <TabPanels class="p-0!">
         <TabPanel v-for="tab in tabs" :key="tab.value" :value="tab.value">
           <div class="mt-4 flex flex-col gap-4">
             <StatisticDiagram
