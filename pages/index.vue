@@ -138,7 +138,7 @@ onMounted(async () => {
       :rooms="rooms"
     />
 
-    <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+    <div class="mt-4 flex flex-wrap gap-4">
       <StatisticCard
         v-for="card in cards"
         :key="card.title"
@@ -148,6 +148,7 @@ onMounted(async () => {
         :unit="card.unit"
         :normalRange="card.normalRange"
         :criticalText="card.criticalText"
+        class="flex-1 w-full sm:max-1/2 md:w-1/3"
       />
     </div>
 
@@ -182,7 +183,7 @@ onMounted(async () => {
       </Tabs>
     </div>
 
-    <div class="mt-4 hidden sm:grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+    <div class="mt-4 hidden sm:flex flex-wrap gap-4">
       <StatisticDiagram
         v-for="(chart, index) in charts"
         :key="index"
@@ -190,9 +191,11 @@ onMounted(async () => {
         :chartData="chart.data"
         :chartOptions="chart.options"
         chartType="line"
+        class="flex-1 w-full sm:max-1/2 md:w-1/3"
       />
     </div>
-    <div class="mt-4 hidden sm:grid grid-cols-1 md:grid-cols-2 gap-4">
+
+    <div class="mt-4 hidden sm:flex flex-wrap gap-4">
       <StatisticDiagram
         v-for="(chart, index) in historyCharts"
         :key="index"
@@ -200,6 +203,7 @@ onMounted(async () => {
         :chartData="chart.data"
         :chartOptions="chart.options"
         chartType="bar"
+        class="flex-1 w-full md:w-1/2"
       />
     </div>
   </div>
