@@ -4,13 +4,19 @@ defineProps({
   text: String,
   icon: String,
   normalRange: String,
+  isCritical: Boolean,
 });
 </script>
 
 <template>
-  <div class="bg-white p-4 shadow-md rounded-md">
+  <div
+    class="bg-white p-4 shadow-md rounded-md"
+    :class="{ 'border border-red-600': isCritical }"
+  >
     <div class="flex justify-between items-center mb-2">
-      <h3 class="font-bold text-primary2">{{ title }}</h3>
+      <h3 class="font-bold text-primary2" :class="{ 'text-red-600': isCritical }">
+        {{ title }}
+      </h3>
       <Icon :name="icon" class="text-3xl text-black" />
     </div>
     <p class="text-2xl font-bold">{{ text }}</p>
