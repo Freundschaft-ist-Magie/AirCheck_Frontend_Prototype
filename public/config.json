@@ -17,7 +17,7 @@
   "airQuality": {
     "title": "Luftqualität",
     "icon": "mdi:air-filter",
-    "normalRange": "> 2000 ppm",
+    "normalRange": "> 1400 ppm",
     "chartColor": "#3357FF"
   },
   "forecastColor": "#000"
