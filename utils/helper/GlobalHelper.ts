@@ -4,34 +4,51 @@ import Dataset from "~/models/Dataset";
 import type SensorData from "~/models/SensorData";
 
 class GlobalHelper {
-  public static MapTemperature(themperature: number) {
-    const { title, icon, normalRange } = config.temperature;
+  private static MapData(value: number, { title, icon, unit, normalRange, criticalText }: any) {
     return {
       title,
-      text: themperature + " °C",
+      value,
       icon,
+      unit,
       normalRange,
+      criticalText
     };
+  }
+
+  public static MapTemperature(temperature: number) {
+    const { title, icon, unit, normalRange, criticalText } = config.temperature;
+
+    return this.MapData(temperature, {
+      title,
+      icon,
+      unit,
+      normalRange,
+      criticalText
+    });
   }
 
   public static MapHumidity(humidity: number) {
-    const { title, icon, normalRange } = config.humidity;
-    return {
+    const { title, icon, unit, normalRange, criticalText } = config.humidity;
+
+    return this.MapData(humidity, {
       title,
-      text: humidity + " %",
       icon,
+      unit,
       normalRange,
-    };
+      criticalText
+    });
   }
 
   public static MapAirQuality(airQuality: number) {
-    const { title, icon, normalRange } = config.airQuality;
-    return {
+    const { title, icon, unit, normalRange, criticalText } = config.airQuality;
+
+    return this.MapData(airQuality, {
       title,
-      text: airQuality + " ppm",
       icon,
+      unit,
       normalRange,
-    };
+      criticalText
+    });
   }
 
   public static MapChartDataTemperature(temperature: SensorData[], isForecast: boolean = false) {
@@ -111,13 +128,13 @@ class GlobalHelper {
     });
 
     const dataset = new Dataset(
-        title,
-        selectedRoom.map((reading) => {
-          return Number(reading.value);
-        }),
-        false,
-        chartColor,
-        0
+      title,
+      selectedRoom.map((reading) => {
+        return Number(reading.value);
+      }),
+      false,
+      chartColor,
+      0
     );
 
     return new ChartData(labels, [dataset]);
@@ -135,13 +152,13 @@ class GlobalHelper {
     });
 
     const dataset = new Dataset(
-        title,
-        selectedRoom.map((reading) => {
-          return Number(reading.value);
-        }),
-        false,
-        chartColor,
-        0
+      title,
+      selectedRoom.map((reading) => {
+        return Number(reading.value);
+      }),
+      false,
+      chartColor,
+      0
     );
 
     return new ChartData(labels, [dataset]);
@@ -159,13 +176,13 @@ class GlobalHelper {
     });
 
     const dataset = new Dataset(
-        title,
-        selectedRoom.map((reading) => {
-          return Number(reading.value);
-        }),
-        false,
-        chartColor,
-        0
+      title,
+      selectedRoom.map((reading) => {
+        return Number(reading.value);
+      }),
+      false,
+      chartColor,
+      0
     );
 
     return new ChartData(labels, [dataset]);

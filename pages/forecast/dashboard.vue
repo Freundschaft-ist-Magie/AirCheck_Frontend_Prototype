@@ -16,7 +16,7 @@ const charts = ref<{ data: ChartData; options: ChartOptions }[]>([]);
 const metrics = [
   { label: "Temperatur", value: "Temperatur" },
   { label: "Luftfeuchtigkeit", value: "Luftfeuchtigkeit" },
-  { label: "CO2 Level", value: "CO2 Level" },
+  { label: "CO₂ Level", value: "CO₂ Level" },
 ];
 
 // Add computed property to get the current chart based on selected metric
@@ -27,7 +27,7 @@ const currentChart = computed(() => {
     return charts.value[0];
   } else if (selectedMetric.value === "Luftfeuchtigkeit") {
     return charts.value[1];
-  } else if (selectedMetric.value === "CO2 Level") {
+  } else if (selectedMetric.value === "CO₂ Level") {
     return charts.value[2];
   }
 
@@ -146,7 +146,7 @@ onMounted(async () => {
       const missingForecasts = [];
       if (!hasTempForecast) missingForecasts.push("Temperatur");
       if (!hasHumidityForecast) missingForecasts.push("Luftfeuchtigkeit");
-      if (!hasAirQualityForecast) missingForecasts.push("CO2 Level");
+      if (!hasAirQualityForecast) missingForecasts.push("CO₂ Level");
 
       showWarningToast(
         "Hinweis",

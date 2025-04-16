@@ -17,12 +17,12 @@ const historyCharts = ref<{ data: ChartData; options: ChartOptions }[]>([]);
 const chartTitles = ref([
   "Temperatur in den letzten 24 h",
   "Luftfeuchtigkeit in den letzten 24 h",
-  "CO2 Level in den letzten 24 h",
+  "CO₂ Level in den letzten 24 h",
 ]);
 const monthChartTitles = ref([
   "Temperatur in den letzten 30 Tagen",
   "Luftfeuchtigkeit in den letzten 30 Tagen",
-  "CO2 Level in den letzten 30 Tagen",
+  "CO₂ Level in den letzten 30 Tagen",
 ]);
 const tabs = ref([
   {
@@ -38,7 +38,7 @@ const tabs = ref([
     monthChart: 1,
   },
   {
-    title: "CO2 Level",
+    title: "CO₂ Level",
     value: "2",
     dayChart: 2,
     monthChart: 2,
@@ -143,9 +143,11 @@ onMounted(async () => {
         v-for="card in cards"
         :key="card.title"
         :title="card.title"
-        :text="card.text"
+        :value="card.value"
         :icon="card.icon"
+        :unit="card.unit"
         :normalRange="card.normalRange"
+        :criticalText="card.criticalText"
       />
     </div>
 
