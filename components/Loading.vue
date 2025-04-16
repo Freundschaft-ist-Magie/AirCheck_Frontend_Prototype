@@ -94,8 +94,15 @@ body {
   top: 50%;
   left: 50%;
   transform: translateX(-50%) translateY(-50%);
-  height: 90vmin;
-  width: 90vmin;
+  height: 60vmin;
+  width: 60vmin;
+}
+
+@media (max-width: 600px) {
+  .animation-example {
+    height: 80vmin;
+    width: 80vmin;
+  }
 }
 
 .animation-example > .item {
