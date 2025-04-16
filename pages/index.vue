@@ -149,32 +149,36 @@ onMounted(async () => {
       />
     </div>
 
-    <Tabs value="0" class="mt-4">
-      <TabList>
-        <Tab v-for="tab in tabs" :key="tab.title" :value="tab.value">{{ tab.title }}</Tab>
-      </TabList>
-      <TabPanels class="p-0!">
-        <TabPanel v-for="tab in tabs" :key="tab.value" :value="tab.value">
-          <div class="mt-4 flex flex-col gap-4">
-            <StatisticDiagram
-              v-if="charts[tab.dayChart]"
-              :title="chartTitles[tab.dayChart]"
-              :chartData="charts[tab.dayChart].data"
-              :chartOptions="charts[tab.dayChart].options"
-              chartType="line"
-            />
+    <div class="mt-4 block sm:hidden">
+      <Tabs value="0">
+        <TabList>
+          <Tab v-for="tab in tabs" :key="tab.title" :value="tab.value">{{
+            tab.title
+          }}</Tab>
+        </TabList>
+        <TabPanels class="p-0!">
+          <TabPanel v-for="tab in tabs" :key="tab.value" :value="tab.value">
+            <div class="mt-4 flex flex-col gap-4">
+              <StatisticDiagram
+                v-if="charts[tab.dayChart]"
+                :title="chartTitles[tab.dayChart]"
+                :chartData="charts[tab.dayChart].data"
+                :chartOptions="charts[tab.dayChart].options"
+                chartType="line"
+              />
 
-            <StatisticDiagram
-              v-if="historyCharts[tab.monthChart]"
-              :title="monthChartTitles[tab.monthChart]"
-              :chartData="historyCharts[tab.monthChart].data"
-              :chartOptions="historyCharts[tab.monthChart].options"
-              chartType="bar"
-            />
-          </div>
-        </TabPanel>
-      </TabPanels>
-    </Tabs>
+              <StatisticDiagram
+                v-if="historyCharts[tab.monthChart]"
+                :title="monthChartTitles[tab.monthChart]"
+                :chartData="historyCharts[tab.monthChart].data"
+                :chartOptions="historyCharts[tab.monthChart].options"
+                chartType="bar"
+              />
+            </div>
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
+    </div>
 
     <div class="mt-4 hidden sm:grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
       <StatisticDiagram
