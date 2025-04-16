@@ -44,7 +44,7 @@ const panelLinks = computed(() => {
 </script>
 
 <template>
-  <div class="bg-gray2 p-4 flex justify-between items-center rounded-md">
+  <div class="bg-gray2 p-4 flex justify-between items-center rounded-md shadow-md shadow-black/40">
     <Button
       severity="secondary"
       class="p-0! m-0! bg-transparent! border-0!"

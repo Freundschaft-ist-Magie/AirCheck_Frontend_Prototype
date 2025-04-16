@@ -10,7 +10,7 @@ defineProps({
 
 <template>
   <div
-    class="bg-white p-4 shadow-md rounded-md"
+    class="bg-white p-4 shadow-md shadow-black/40 rounded-md"
     :class="{ 'border border-red-600': isCritical }"
   >
     <div class="flex justify-between items-center mb-2">
