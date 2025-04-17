@@ -52,7 +52,11 @@ const _makeApiCall = async (
     }
 
     console.error("Error in API call:", error);
-    toastStore.setToast("Fehler beim Verbinden zum Server.", "danger");
+    toastStore.setToast(
+      "error",
+      "Fehler",
+      "Fehler beim Verbinden zum Server."
+    );
     throw error;
   }
 };

@@ -34,7 +34,7 @@ export const useRoleStore = defineStore("role", () => {
       console.error("Error, during creating a new Role");
 
       useToastStore().setToast(
-        "danger",
+        "error",
         "Fehler",
         "Rolle konnte nicht hinzugefügt werden."
       );
@@ -63,7 +63,7 @@ export const useRoleStore = defineStore("role", () => {
       console.error("Was not able to update Role with ID:", role.id);
 
       useToastStore().setToast(
-        "danger",
+        "error",
         "Fehler",
         "Rolle konnte nicht aktualisiert werden."
       );
@@ -88,7 +88,7 @@ export const useRoleStore = defineStore("role", () => {
       console.error("Not found Role with ID:", role.id);
 
       useToastStore().setToast(
-        "danger",
+        "error",
         "Fehler",
         "Rolle konnte nicht gelöscht werden."
       );

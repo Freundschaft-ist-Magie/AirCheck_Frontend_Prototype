@@ -43,7 +43,7 @@ export const useNotificationStore = defineStore("notification", () => {
       console.error("Was not able to update Notification with ID:", notification.id);
 
       useToastStore().setToast(
-        "danger",
+        "error",
         "Fehler",
         "Benachrichtigung konnte nicht aktuallisiert werden"
       );
@@ -69,7 +69,7 @@ export const useNotificationStore = defineStore("notification", () => {
 
     if (hasError) {
       useToastStore().setToast(
-        "danger",
+        "error",
         "Fehler",
         "Benachrichtigungen konnten nicht aktualisiert werden"
       );
@@ -98,7 +98,7 @@ export const useNotificationStore = defineStore("notification", () => {
       console.error("Was not able to update Notification with ID:", notification.id);
 
       useToastStore().setToast(
-        "danger",
+        "error",
         "Fehler",
         "Benachrichtigung konnte nicht entfernt werden"
       );
@@ -122,7 +122,7 @@ export const useNotificationStore = defineStore("notification", () => {
 
     if (hasError) {
       useToastStore().setToast(
-        "danger",
+        "error",
         "Fehler",
         "Benachrichtigungen konnten nicht entfernt werden"
       );
