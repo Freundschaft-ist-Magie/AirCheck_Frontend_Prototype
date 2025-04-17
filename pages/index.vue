@@ -138,7 +138,7 @@ onMounted(async () => {
       :rooms="rooms"
     />
 
-    <div class="mt-4 flex flex-wrap gap-4">
+    <div class="mt-4 flex flex-wrap gap-4 items-center">
       <StatisticCard
         v-for="card in cards"
         :key="card.title"
