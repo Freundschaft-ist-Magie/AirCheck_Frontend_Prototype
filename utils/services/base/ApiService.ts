@@ -3,6 +3,7 @@ import { useToastStore } from "~/utils/stores/base/ToastStore";
 import StorageService from "./StorageService";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
+const VITE_API_ENDPOINT_PREFIX = import.meta.env.VITE_API_ENDPOINT_PREFIX || "";
 
 const _makeApiCall = async (
   method: "GET" | "POST" | "PUT" | "DELETE",
@@ -15,7 +16,7 @@ const _makeApiCall = async (
   const toastStore = useToastStore();
 
   try {
-    const response = await $fetch(`${API_BASE_URL}${endpoint}`, {
+    const response = await $fetch(`${API_BASE_URL}${VITE_API_ENDPOINT_PREFIX}${endpoint}`, {
       method,
       body: data ? JSON.stringify(data) : undefined,
       query: params || undefined,
