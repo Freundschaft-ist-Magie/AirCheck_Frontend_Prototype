@@ -11,10 +11,10 @@ const model = ref();
 <template>
   <Select
     v-model="model"
-    :options="props.options"
+    :options="options"
     filter
-    :optionLabel="props.filterField"
-    :placeholder="props.placeholder"
+    :optionLabel="filterField"
+    :placeholder="placeholder"
     size="large"
     class="w-full md:w-56 bg-white! border-0! shadow-none!"
   >
@@ -25,7 +25,7 @@ const model = ref();
       <span v-else class="text-3xl font-bold text-black">
         <span>
           {{
-            props.options && props.options.length > 0 ? props.options[0].name : "No data"
+            options && options.length > 0 ? options[0].name : "No data"
           }}
         </span>
       </span>

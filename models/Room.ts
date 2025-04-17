@@ -1,20 +1,30 @@
-import SensorData from '~/models/SensorData';
-
 class Room {
-  id: number;
-  name: string;
-  description: string;
-  environmentData: {
-    temperature: SensorData[];
-    humidity: SensorData[];
-    airQuality: SensorData[];
-  }
+  Id: number;
+  Humidity: number;
+  Temperature: number;
+  Pressure: number;
+  Gas: number;
+  TimeStamp: string;
+  Room: { id: number; macAddress: string } | null;
+  RoomId: number;
 
-  constructor(id: number, name: string, description: string, environmentData: { temperature: SensorData[]; humidity: SensorData[]; airQuality: SensorData[] }) {
-    this.id = id;
-    this.name = name;
-    this.description = description;
-    this.environmentData = environmentData;
+  constructor(
+    id: number,
+    humidity: number,
+    temperature: number,
+    pressure: number,
+    gas: number,
+    timeStamp: string,
+    roomId: number
+  ) {
+    this.Id = id;
+    this.Humidity = humidity;
+    this.Temperature = temperature;
+    this.Pressure = pressure;
+    this.Gas = gas;
+    this.TimeStamp = timeStamp;
+    this.RoomId = roomId;
+    this.Room = null;
   }
 }
 

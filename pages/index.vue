@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { useLoadingStore } from "@/utils/stores/base/LoadingStore";
+import { useRoomsStore } from "~/utils/stores/RoomsStore";
 import RoomsService from "~/utils/services/RoomsService";
 import Room from "~/models/Room";
 import GlobalHelper from "~/utils/helper/GlobalHelper";
@@ -8,6 +9,8 @@ import ChartData from "~/models/ChartData";
 import ChartOptions from "~/models/ChartOptions";
 
 const loadingStore = useLoadingStore();
+const roomsStore = useRoomsStore();
+
 const latestFetch = ref(new Date());
 const selectedRoom = ref<Room | null>(null);
 const rooms = ref<Room[]>([]);
@@ -48,53 +51,47 @@ const tabs = ref([
 loadingStore.setLoading(true);
 
 onMounted(async () => {
+  const webSocket = new WebSocket("ws://localhost:5170/api/roomDatas/ws");
+  webSocket.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    latestFetch.value = new Date(data.TimeStamp);
+    selectedRoom.value = data;
+    console.log("WebSocket message received:", data);
+  };
+
   loadingStore.setLoading(true);
 
-  const roomsService = new RoomsService();
-  const fetchedRooms = await roomsService.Get();
-  const fetchedHistory = await roomsService.GetHistory();
+  const fetchedRooms = await roomsStore.GetAll();
+  //const fetchedHistory = await roomsService.GetHistory();
 
-  // Update rooms with fetched data
-  rooms.value = fetchedRooms.map((room: any) => {
-    return new Room(room.id, room.name, room.description, {
-      temperature: room.environmentData.temperature,
-      humidity: room.environmentData.humidity,
-      airQuality: room.environmentData.airQuality,
-    });
+  rooms.value = fetchedRooms;
+  let temps: any = [];
+  rooms.value.forEach((room) => {
+    temps.push({ timeStamp: room.TimeStamp, temperature: room.Temperature });
   });
-
+  console.log(temps);
   selectedRoom.value = rooms.value[0];
 
+  console.log(selectedRoom.value.Temperature);
+
   // set cards
-  const cardTemperature = GlobalHelper.MapTemperature(
-    selectedRoom.value.environmentData.temperature[
-      selectedRoom.value.environmentData.temperature.length - 1
-    ].value
-  );
-  const cardHumidity = GlobalHelper.MapHumidity(
-    selectedRoom.value.environmentData.humidity[
-      selectedRoom.value.environmentData.humidity.length - 1
-    ].value
-  );
-  const cardAirQuality = GlobalHelper.MapAirQuality(
-    selectedRoom.value.environmentData.airQuality[
-      selectedRoom.value.environmentData.airQuality.length - 1
-    ].value
-  );
+  const cardTemperature = GlobalHelper.MapTemperature(selectedRoom.value.Temperature);
+  const cardHumidity = GlobalHelper.MapHumidity(selectedRoom.value.Humidity);
+  const cardAirQuality = GlobalHelper.MapAirQuality(selectedRoom.value.Pressure);
 
   // set diagram data
-  const temperatureData = GlobalHelper.MapChartDataTemperature(
-    selectedRoom.value.environmentData.temperature
+  /* const temperatureData = GlobalHelper.MapChartDataTemperature(
+    selectedRoom.value.temperature
   );
   const humidityData = GlobalHelper.MapChartDataHumidity(
-    selectedRoom.value.environmentData.humidity
+    selectedRoom.value.humidity
   );
   const airQualityData = GlobalHelper.MapChartDataAirQuality(
-    selectedRoom.value.environmentData.airQuality
-  );
+    selectedRoom.value.airQuality
+  ); */
 
   // set history diagram data
-  const temperatureHistoryData = GlobalHelper.MapHistoryChartDataTemperature(
+  /*  const temperatureHistoryData = GlobalHelper.MapHistoryChartDataTemperature(
     fetchedHistory,
     selectedRoom.value
   );
@@ -105,12 +102,12 @@ onMounted(async () => {
   const airQualityHistoryData = GlobalHelper.MapHistoryChartDataAirQuality(
     fetchedHistory,
     selectedRoom.value
-  );
+  ); */
 
   const chartOptions = new ChartOptions();
 
   cards.value.push(cardTemperature, cardHumidity, cardAirQuality);
-  charts.value.push(
+  /* charts.value.push(
     { data: temperatureData, options: chartOptions },
     { data: humidityData, options: chartOptions },
     { data: airQualityData, options: chartOptions }
@@ -121,7 +118,7 @@ onMounted(async () => {
     { data: humidityHistoryData, options: chartOptions },
     { data: airQualityHistoryData, options: chartOptions }
   );
-
+ */
   loadingStore.setLoading(false);
 });
 </script>

@@ -82,14 +82,14 @@ onMounted(async () => {
     selectedRoom.value = rooms.value[0];
 
     // Find the forecast for the selected room
-    const roomForecast = forecasts.find((f) => f.id === selectedRoom.value?.id);
+    const roomForecast = forecasts.find((f) => f.Id === selectedRoom.value?.Id);
 
     if (!roomForecast) {
       showErrorToast(
         "Fehler",
         `Keine Prognosedaten für Raum "${selectedRoom.value.name}" gefunden.`
       );
-      console.error(`No forecast found for room with ID ${selectedRoom.value.id}`);
+      console.error(`No forecast found for room with ID ${selectedRoom.value.Id}`);
       loading.value = false;
       return;
     }
