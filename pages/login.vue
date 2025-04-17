@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { useAuthStore } from "@/utils/stores/base/AuthStore";
+import { useLoadingStore } from "@/utils/stores/base/LoadingStore";
 
 // Form data
 const email = ref("");
@@ -8,6 +9,7 @@ const error = ref("");
 const loading = ref(false);
 const router = useRouter();
 
+const loadingStore = useLoadingStore();
 const authStore = useAuthStore();
 
 const isClient = () => typeof window !== 'undefined';
@@ -53,6 +55,12 @@ const handleLogin = async () => {
     console.error("Login error:", err);
   }
 };
+
+loadingStore.setLoading(true);
+
+onMounted(() => {
+  loadingStore.setLoading(false);
+});
 </script>
 
 <template>
