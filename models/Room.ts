@@ -1,12 +1,12 @@
 class Room {
-  Id: number;
-  Humidity: number;
-  Temperature: number;
-  Pressure: number;
-  Gas: number;
-  TimeStamp: string;
-  Room: { id: number; macAddress: string } | null;
-  RoomId: number;
+  id: number;
+  humidity: number;
+  temperature: number;
+  pressure: number;
+  gas: number;
+  timeStamp: string;
+  room: { id: number; macAddress: string } | null;
+  roomId: number;
 
   constructor(
     id: number,
@@ -17,14 +17,14 @@ class Room {
     timeStamp: string,
     roomId: number
   ) {
-    this.Id = id;
-    this.Humidity = humidity;
-    this.Temperature = temperature;
-    this.Pressure = pressure;
-    this.Gas = gas;
-    this.TimeStamp = timeStamp;
-    this.RoomId = roomId;
-    this.Room = null;
+    this.id = id;
+    this.humidity = humidity;
+    this.temperature = temperature;
+    this.pressure = pressure;
+    this.gas = gas;
+    this.timeStamp = timeStamp;
+    this.roomId = roomId;
+    this.room = null;
   }
 }
 

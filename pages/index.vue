@@ -14,6 +14,7 @@ const roomsStore = useRoomsStore();
 const latestFetch = ref(new Date());
 const selectedRoom = ref<Room | null>(null);
 const rooms = ref<Room[]>([]);
+const roomsHistory = ref<{ timeStamp: string; temperature: number }[]>([]);
 const cards = ref<StatisticCardObj[]>([]);
 const charts = ref<{ data: ChartData; options: ChartOptions }[]>([]);
 const historyCharts = ref<{ data: ChartData; options: ChartOptions }[]>([]);
@@ -51,33 +52,55 @@ const tabs = ref([
 loadingStore.setLoading(true);
 
 onMounted(async () => {
+  loadingStore.setLoading(true);
+
   const webSocket = new WebSocket("ws://localhost:5170/api/roomDatas/ws");
   webSocket.onmessage = (event) => {
     const data = JSON.parse(event.data);
-    latestFetch.value = new Date(data.TimeStamp);
-    selectedRoom.value = data;
+    latestFetch.value = new Date();
+
+    // the api gives multiple data from room, first we need to sort the data by roomId
+    rooms.value = data.reduce((acc: Room[], roomData: Room) => {
+      const existingRoom = acc.find((room) => room.id === roomData.id);
+      if (existingRoom) {
+        existingRoom.temperature = roomData.temperature;
+        existingRoom.humidity = roomData.humidity;
+        existingRoom.pressure = roomData.pressure;
+        existingRoom.timeStamp = roomData.timeStamp;
+      } else {
+        acc.push(roomData);
+      }
+      return acc;
+    }, [] as Room[]);
+
+    console.log("rooms.value", rooms.value);
+
+    // Update roomsHistory for each room
+    rooms.value.forEach((room) => {
+      roomsHistory.value.push({
+        timeStamp: room.timeStamp,
+        temperature: room.temperature,
+      });
+    });
+
+    // Update selected room if needed
+    if (!selectedRoom.value) {
+      selectedRoom.value = rooms.value[0];
+    } else if (!rooms.value.some((room) => room.id === selectedRoom.value?.id)) {
+      selectedRoom.value = rooms.value[0];
+    }
+
+    // Set cards for the selected room
+    const cardTemperature = GlobalHelper.MapTemperature(selectedRoom.value.temperature);
+    const cardHumidity = GlobalHelper.MapHumidity(selectedRoom.value.humidity);
+    const cardAirQuality = GlobalHelper.MapAirQuality(selectedRoom.value.pressure);
+
+    cards.value.push(cardTemperature, cardHumidity, cardAirQuality);
+
     console.log("WebSocket message received:", data);
+    console.log("roomsHistory.value", roomsHistory.value);
+    console.log("selected room ", selectedRoom.value);
   };
-
-  loadingStore.setLoading(true);
-
-  const fetchedRooms = await roomsStore.GetAll();
-  //const fetchedHistory = await roomsService.GetHistory();
-
-  rooms.value = fetchedRooms;
-  let temps: any = [];
-  rooms.value.forEach((room) => {
-    temps.push({ timeStamp: room.TimeStamp, temperature: room.Temperature });
-  });
-  console.log(temps);
-  selectedRoom.value = rooms.value[0];
-
-  console.log(selectedRoom.value.Temperature);
-
-  // set cards
-  const cardTemperature = GlobalHelper.MapTemperature(selectedRoom.value.Temperature);
-  const cardHumidity = GlobalHelper.MapHumidity(selectedRoom.value.Humidity);
-  const cardAirQuality = GlobalHelper.MapAirQuality(selectedRoom.value.Pressure);
 
   // set diagram data
   /* const temperatureData = GlobalHelper.MapChartDataTemperature(
@@ -106,7 +129,7 @@ onMounted(async () => {
 
   const chartOptions = new ChartOptions();
 
-  cards.value.push(cardTemperature, cardHumidity, cardAirQuality);
+  //cards.value.push(cardTemperature, cardHumidity, cardAirQuality);
   /* charts.value.push(
     { data: temperatureData, options: chartOptions },
     { data: humidityData, options: chartOptions },
