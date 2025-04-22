@@ -1,18 +1,35 @@
-FROM node:23-alpine as builder
+# Build Stage 1
 
+FROM node:22-alpine AS build
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm install
+RUN corepack enable
 
-COPY . .
+COPY package.json ./
 
+# Install dependencies
+RUN npm i
+
+# Copy the entire project
+COPY . ./
+
+# Build the project
 RUN npm run build
 
-FROM nginx:alpine
+# Build Stage 2
 
-COPY --from=builder /app/dist /usr/share/nginx/html
+FROM node:22-alpine
+WORKDIR /app
+
+# Only `.output` folder is needed from the build stage
+COPY --from=build /app/.output/ ./
+
+# Change the port and host
+ENV PORT 80
+ENV HOST 0.0.0.0
+ENV VITE_API_URL "example.com"
+ENV VITE_API_ENDPOINT_PREFIX "api/"
 
 EXPOSE 80
 
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["node", "/app/server/index.mjs"]
