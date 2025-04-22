@@ -58,7 +58,7 @@ onMounted(() => {
         </div>
       </div>
       <span v-else class="text-3xl font-bold text-black">
-        Room {{ options && options.length > 0 ? options[0].roomId : "No data" }}
+        {{ options && options.length > 0 ? "Room " . options[0].roomId : "No data" }}
       </span>
     </template>
     <template #option="slotProps">
