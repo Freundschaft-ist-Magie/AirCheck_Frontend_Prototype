@@ -1,6 +1,6 @@
 class StatisticCardObj {
   title: string;
-  value: string;
+  value: number;
   icon: string;
   unit: string;
   normalRange: {
@@ -14,7 +14,7 @@ class StatisticCardObj {
 
   constructor(
     title: string,
-    value: string,
+    value: number,
     icon: string,
     unit: string,
     normalRange: { low: number; high: number },

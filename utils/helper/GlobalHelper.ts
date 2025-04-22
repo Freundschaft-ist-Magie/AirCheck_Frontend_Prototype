@@ -51,19 +51,19 @@ class GlobalHelper {
     });
   }
 
-  public static MapChartDataTemperature(temperature: SensorData[], isForecast: boolean = false) {
+  public static MapChartDataTemperature(temperature: { timeStamp: string; temperature: number; }[], isForecast: boolean = false) {
     const { title, chartColor } = config.temperature;
     const forecastColor = config.forecastColor;
 
     const labels = temperature.map((reading) => {
-      const date = new Date(reading.timestamp).toISOString().split("T")[1].split(".")[0];
+      const date = new Date(reading.timeStamp).toISOString().split("T")[1].split(".")[0];
       return date;
     });
 
     const dataset = new Dataset(
       title,
       temperature.map((reading) => {
-        return Number(reading.value);
+        return Number(reading.temperature);
       }),
       false,
       isForecast ? forecastColor : chartColor,
@@ -73,19 +73,19 @@ class GlobalHelper {
     return new ChartData(labels, [dataset]);
   }
 
-  public static MapChartDataHumidity(humidity: SensorData[], isForecast: boolean = false) {
+  public static MapChartDataHumidity(humidity: { timeStamp: string; humidity: number; }[], isForecast: boolean = false) {
     const { title, chartColor } = config.humidity;
     const forecastColor = config.forecastColor;
 
     const labels = humidity.map((reading) => {
-      const date = new Date(reading.timestamp).toISOString().split("T")[1].split(".")[0];
+      const date = new Date(reading.timeStamp).toISOString().split("T")[1].split(".")[0];
       return date;
     });
 
     const dataset = new Dataset(
       title,
       humidity.map((reading) => {
-        return Number(reading.value);
+        return Number(reading.humidity);
       }),
       false,
       isForecast ? forecastColor : chartColor,
@@ -95,19 +95,19 @@ class GlobalHelper {
     return new ChartData(labels, [dataset]);
   }
 
-  public static MapChartDataAirQuality(airQuality: SensorData[], isForecast: boolean = false) {
+  public static MapChartDataAirQuality(airQuality: { timeStamp: string; airQuality: number; }[], isForecast: boolean = false) {
     const { title, chartColor } = config.airQuality;
     const forecastColor = config.forecastColor;
 
     const labels = airQuality.map((reading) => {
-      const date = new Date(reading.timestamp).toISOString().split("T")[1].split(".")[0];
+      const date = new Date(reading.timeStamp).toISOString().split("T")[1].split(".")[0];
       return date;
     });
 
     const dataset = new Dataset(
       title,
       airQuality.map((reading) => {
-        return Number(reading.value);
+        return Number(reading.airQuality);
       }),
       false,
       isForecast ? forecastColor : chartColor,

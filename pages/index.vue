@@ -54,7 +54,7 @@ loadingStore.setLoading(true);
 onMounted(async () => {
   loadingStore.setLoading(true);
 
-  const webSocket = new WebSocket("ws://localhost:5170/api/roomDatas/ws");
+  const webSocket = new WebSocket("ws://localhost:8081/api/roomDatas/ws");
   webSocket.onmessage = (event) => {
     const data = JSON.parse(event.data);
     latestFetch.value = new Date();
@@ -97,51 +97,24 @@ onMounted(async () => {
 
     cards.value.push(cardTemperature, cardHumidity, cardAirQuality);
 
+    // set diagram data
+    const temperatureData = GlobalHelper.MapChartDataTemperature(roomsHistory.value);
+    const humidityData = GlobalHelper.MapChartDataHumidity(roomsHistory.value);
+    const airQualityData = GlobalHelper.MapChartDataAirQuality(roomsHistory.value);
+
+    const chartOptions = new ChartOptions();
+
+    charts.value.push(
+      { data: temperatureData, options: chartOptions },
+      { data: humidityData, options: chartOptions },
+      { data: airQualityData, options: chartOptions }
+    );
+
     console.log("WebSocket message received:", data);
     console.log("roomsHistory.value", roomsHistory.value);
     console.log("selected room ", selectedRoom.value);
   };
 
-  // set diagram data
-  /* const temperatureData = GlobalHelper.MapChartDataTemperature(
-    selectedRoom.value.temperature
-  );
-  const humidityData = GlobalHelper.MapChartDataHumidity(
-    selectedRoom.value.humidity
-  );
-  const airQualityData = GlobalHelper.MapChartDataAirQuality(
-    selectedRoom.value.airQuality
-  ); */
-
-  // set history diagram data
-  /*  const temperatureHistoryData = GlobalHelper.MapHistoryChartDataTemperature(
-    fetchedHistory,
-    selectedRoom.value
-  );
-  const humidityHistoryData = GlobalHelper.MapHistoryChartDataHumidity(
-    fetchedHistory,
-    selectedRoom.value
-  );
-  const airQualityHistoryData = GlobalHelper.MapHistoryChartDataAirQuality(
-    fetchedHistory,
-    selectedRoom.value
-  ); */
-
-  const chartOptions = new ChartOptions();
-
-  //cards.value.push(cardTemperature, cardHumidity, cardAirQuality);
-  /* charts.value.push(
-    { data: temperatureData, options: chartOptions },
-    { data: humidityData, options: chartOptions },
-    { data: airQualityData, options: chartOptions }
-  );
-
-  historyCharts.value.push(
-    { data: temperatureHistoryData, options: chartOptions },
-    { data: humidityHistoryData, options: chartOptions },
-    { data: airQualityHistoryData, options: chartOptions }
-  );
- */
   loadingStore.setLoading(false);
 });
 </script>
@@ -189,6 +162,7 @@ onMounted(async () => {
                 chartType="line"
               />
 
+              <!--
               <StatisticDiagram
                 v-if="historyCharts[tab.monthChart]"
                 :title="monthChartTitles[tab.monthChart]"
@@ -196,6 +170,7 @@ onMounted(async () => {
                 :chartOptions="historyCharts[tab.monthChart].options"
                 chartType="bar"
               />
+              -->
             </div>
           </TabPanel>
         </TabPanels>
