@@ -12,6 +12,12 @@ defineProps<{
   }[];
 }>();
 
+const permissions = [
+  { name: "read", label: "Lesen" },
+  { name: "write", label: "Schreiben" },
+  { name: "manage", label: "Verwalten" },
+];
+
 const dialog = useDialog();
 
 const addRole = () => {
@@ -73,7 +79,16 @@ const deleteRole = (role: { id: number; name: string; permissions: string }) => 
     <!--
     <Column field="users" header="Anz. Benutzer"></Column>
     -->
-    <Column field="permissions" header="Berechtigungen"></Column>
+    <Column header="Berechtigungen">
+      <template #body="{ data }">
+        <div class="flex items-center gap-2">
+          <span class="mr-2" v-for="p in permissions" :key="p.name">
+            <Checkbox v-model="data[p.name]" disabled binary />
+            {{ p.label }}
+          </span>
+        </div>
+      </template>
+    </Column>
 
     <Column>
       <template #body="{ data }">
