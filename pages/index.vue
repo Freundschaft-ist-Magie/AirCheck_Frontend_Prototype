@@ -73,8 +73,6 @@ function setCharts() {
       ? roomsHistory.value[roomId] ?? []
       : [];
 
-  console.log(`History für Raum ${roomId}:`, historyForSelected);
-
   // 2️⃣ Diagrammdaten nur für den selektierten Raum erstellen
   const temperatureData = GlobalHelper.MapChartDataTemperature(historyForSelected);
   const humidityData    = GlobalHelper.MapChartDataHumidity(historyForSelected);

@@ -56,8 +56,6 @@ class GlobalHelper {
     const { title, chartColor } = config.temperature;
     const forecastColor = config.forecastColor;
 
-    console.log(timestamp)
-
     const labels = temperature.map((reading) => {
       const date = new Date(reading.timeStamp).toISOString().split("T")[1].split(".")[0];
       return date;
