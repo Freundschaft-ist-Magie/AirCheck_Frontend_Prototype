@@ -104,7 +104,9 @@ function setCharts() {
 onMounted(async () => {
   loadingStore.setLoading(true);
 
-  const webSocket = new WebSocket("ws://localhost:8081/api/roomDatas/ws");
+  const webSocket = new WebSocket(
+    `ws://${import.meta.env.VITE_API_URL}/api/roomDatas/ws`
+  );
   webSocket.onmessage = (event) => {
     loadingStore.setLoading(true);
     console.log("Skibidi loading");
