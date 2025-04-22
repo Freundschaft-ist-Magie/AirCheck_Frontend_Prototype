@@ -2,6 +2,7 @@ import config from "@/public/config.json";
 import ChartData from "~/models/ChartData";
 import Dataset from "~/models/Dataset";
 import type SensorData from "~/models/SensorData";
+import {timestamp} from "@antfu/utils";
 
 class GlobalHelper {
   private static MapData(value: number, { title, icon, unit, normalRange, criticalText }: any) {
@@ -54,6 +55,8 @@ class GlobalHelper {
   public static MapChartDataTemperature(temperature: { timeStamp: string; temperature: number; }[], isForecast: boolean = false) {
     const { title, chartColor } = config.temperature;
     const forecastColor = config.forecastColor;
+
+    console.log(timestamp)
 
     const labels = temperature.map((reading) => {
       const date = new Date(reading.timeStamp).toISOString().split("T")[1].split(".")[0];
@@ -120,7 +123,7 @@ class GlobalHelper {
   public static MapHistoryChartDataTemperature(history: any, room: any) {
     const { title, chartColor } = config.temperature;
 
-    const selectedRoom = history.find(historyRoom => historyRoom.id === room.id).environmentData.temperature;
+    const selectedRoom = history.find(historyRoom => historyRoom.roomId === room.id).environmentData.temperature;
 
     const labels = selectedRoom.map((reading) => {
       const date = new Date(reading.timestamp).toISOString().split("T")[0];
@@ -144,7 +147,7 @@ class GlobalHelper {
     const { title, chartColor } = config.humidity;
 
     // Shouldn't be hardcoded :(
-    const selectedRoom = history.find(historyRoom => historyRoom.id === room.id).environmentData.humidity;
+    const selectedRoom = history.find(historyRoom => historyRoom.roomId === room.id).environmentData.humidity;
 
     const labels = selectedRoom.map((reading) => {
       const date = new Date(reading.timestamp).toISOString().split("T")[0];
@@ -168,7 +171,7 @@ class GlobalHelper {
     const { title, chartColor } = config.airQuality;
 
     // Shouldn't be hardcoded :(
-    const selectedRoom = history.find(historyRoom => historyRoom.id === room.id).environmentData.airQuality;
+    const selectedRoom = history.find(historyRoom => historyRoom.roomId === room.id).environmentData.airQuality;
 
     const labels = selectedRoom.map((reading) => {
       const date = new Date(reading.timestamp).toISOString().split("T")[0];
