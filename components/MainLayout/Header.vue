@@ -104,7 +104,7 @@ onMounted(() => {
       </Popover>
 
       <div class="flex gap-2 items-center">
-        <Button
+        <!-- <Button
           severity="secondary"
           class="p-0! m-0! bg-transparent! border-0!"
           @click="toggleNavLinksPanel"
@@ -131,7 +131,22 @@ onMounted(() => {
               <span>{{ link.text }}</span>
             </NuxtLink>
           </div>
-        </OverlayPanel>
+        </OverlayPanel> -->
+        <Button
+          severity="secondary"
+          class="p-0! m-0! bg-transparent! border-0!"
+          @click="toggleNavLinksPanel"
+          aria-haspopup="true"
+          aria-controls="navLinksPanel"
+        >
+          <NuxtLink
+            to="logout"
+            class="flex items-center gap-2 text-left hover:bg-gray1/60 px-4 py-2 rounded-md"
+          >
+            <Icon name="mdi-light:logout" class="w-5 h-5" />
+            <span>Logout</span>
+          </NuxtLink>
+        </Button>
       </div>
     </div>
   </div>
