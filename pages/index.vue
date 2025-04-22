@@ -174,7 +174,7 @@ function roomSelected(room) {
 
     console.log("🔥Received data for room:", data.roomId, data);
 
-    if (!data.isBurning) {
+    if (data.isBurning) {
       console.warn("🔥🔥🔥 ALARM: Dieser Raum brennt! 🔥🔥🔥");
       triggerTheInferno();
     }
@@ -204,7 +204,6 @@ function triggerTheInferno() {
     }, 8000);
   });
 }
-
 </script>
 
 <template>
