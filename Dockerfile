@@ -27,7 +27,7 @@ COPY --from=build /app/.output/ ./
 # Change the port and host
 ENV PORT 80
 ENV HOST 0.0.0.0
-ENV VITE_API_URL "example.com"
+ENV VITE_API_URL "localhost:8081"
 ENV VITE_API_ENDPOINT_PREFIX "api/"
 
 EXPOSE 80
