@@ -186,7 +186,7 @@ function roomSelected(room) {
       @roomSelected="roomSelected"
     />
 
-    <RoomTable :room-data="roomsHistory" class="mt-4" />
+    <RoomTable :room-data="roomsHistory" :selected-room-id="selectedRoom.roomId" class="mt-4" />
 
     <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 items-center">
       <StatisticCard
