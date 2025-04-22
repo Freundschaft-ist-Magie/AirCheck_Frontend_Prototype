@@ -3,26 +3,30 @@ import { ref, computed } from "vue";
 
 const props = defineProps({
   roomData: Array, // Das komplette Array (mit den Subarrays pro Raum)
-  selectedRoomId: Object,
+  selectedRoom: Object,
 });
 
 // Die Daten für das gewählte Room-Id herausfiltern:
 const filteredRoomData = computed(() => {
-  const data = props.roomData[props.selectedRoomId.roomId];
+  if (props.selectedRoom == undefined) {
+    return [];
+  }
+
+  const data = props.roomData[props.selectedRoom.roomId];
   if (!data) return [];
   // Optional: Id hinzufügen, wenn gewünscht
   return data.map((entry, index) => ({
     id: index + 1,
     ...entry,
-    roomId: selectedRoomId.value,
+    roomId: props.selectedRoom.roomId,
   }));
 });
 </script>
 
 <template>
-  <Accordion value="0">
+  <Accordion v-if="props.selectedRoom" value="0">
     <AccordionPanel value="0">
-      <AccordionHeader>Raumtabelle für Raum {{ selectedRoomId }}</AccordionHeader>
+      <AccordionHeader>Raumtabelle für Raum {{props.selectedRoom.roomId}}</AccordionHeader>
       <AccordionContent>
         <DataTable
             :value="filteredRoomData"
