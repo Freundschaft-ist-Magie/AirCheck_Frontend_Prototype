@@ -54,7 +54,9 @@ loadingStore.setLoading(true);
 onMounted(async () => {
   loadingStore.setLoading(true);
 
-  const webSocket = new WebSocket("ws://localhost:8081/api/roomDatas/ws");
+  const webSocket = new WebSocket(
+    `ws://${import.meta.env.VITE_API_URL}/api/roomDatas/ws`
+  );
   webSocket.onmessage = (event) => {
     const data = JSON.parse(event.data);
     latestFetch.value = new Date();
