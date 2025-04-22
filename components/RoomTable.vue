@@ -3,15 +3,12 @@ import { ref, computed } from "vue";
 
 const props = defineProps({
   roomData: Array, // Das komplette Array (mit den Subarrays pro Raum)
-  selectedRoomId: Number,
+  selectedRoomId: Object,
 });
-
-// Hier kannst du das gewünschte Room-Id setzen:
-const selectedRoomId = ref(props.selectedRoomId); // z.B. 1, 2, 3 ...
 
 // Die Daten für das gewählte Room-Id herausfiltern:
 const filteredRoomData = computed(() => {
-  const data = props.roomData[selectedRoomId.value];
+  const data = props.roomData[props.selectedRoomId.roomId];
   if (!data) return [];
   // Optional: Id hinzufügen, wenn gewünscht
   return data.map((entry, index) => ({
@@ -42,16 +39,6 @@ const filteredRoomData = computed(() => {
           <Column field="timeStamp" header="Zeitstempel"></Column>
           <Column field="roomId" header="Raum Id"></Column>
         </DataTable>
-
-        <!-- Dropdown zum Wechseln des Raums -->
-        <div style="margin-top: 1rem;">
-          <label for="room-select">Raum auswählen:</label>
-          <select id="room-select" v-model="selectedRoomId">
-            <option v-for="(data, index) in props.roomData" :key="index" :value="index">
-              Raum {{ index }}
-            </option>
-          </select>
-        </div>
       </AccordionContent>
     </AccordionPanel>
   </Accordion>
