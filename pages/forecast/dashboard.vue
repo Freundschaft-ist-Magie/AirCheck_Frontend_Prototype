@@ -72,7 +72,7 @@ onMounted(async () => {
 
     // Update rooms with fetched data
     rooms.value = fetchedRooms.map((room: any) => {
-      return new Room(room.id, room.name, room.description, {
+      return new Room(room.roomId, room.name, room.description, {
         temperature: room.environmentData.temperature,
         humidity: room.environmentData.humidity,
         airQuality: room.environmentData.airQuality,
@@ -82,14 +82,14 @@ onMounted(async () => {
     selectedRoom.value = rooms.value[0];
 
     // Find the forecast for the selected room
-    const roomForecast = forecasts.find((f) => f.id === selectedRoom.value?.id);
+    const roomForecast = forecasts.find((f) => f.roomId === selectedRoom.value?.id);
 
     if (!roomForecast) {
       showErrorToast(
         "Fehler",
         `Keine Prognosedaten für Raum "${selectedRoom.value.name}" gefunden.`
       );
-      console.error(`No forecast found for room with ID ${selectedRoom.value.id}`);
+      console.error(`No forecast found for room with ID ${selectedRoom.value.roomId}`);
       loading.value = false;
       return;
     }

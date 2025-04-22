@@ -1,38 +1,69 @@
 <script setup lang="ts">
-const props = defineProps({
-  options: Array,
-  placeholder: String,
-  filterField: String,
+import { ref, watch, onMounted } from 'vue';
+
+const props = defineProps<{
+  options: Array<any>;
+  placeholder: string;
+  filterField: string;
+  selectedRoom?: any;
+}>();
+
+const emit = defineEmits<{
+  (e: 'roomSelected', payload: any): void;
+}>();
+
+// 1. Model initialisieren mit props.selectedRoom oder fallback auf options[0]
+const model = ref<any>(
+    props.selectedRoom ?? (props.options.length > 0 ? props.options[0] : null)
+);
+
+// 2. Sobald das Model sich ändert, Event nach oben emitten
+watch(model, (newVal) => {
+  if (newVal) emit('roomSelected', newVal);
 });
 
-const model = ref();
+// 3. Wenn props.options später neu kommen und model noch leer ist, default setzen
+watch(
+    () => props.options,
+    (newOptions) => {
+      if ((!model.value || !newOptions.includes(model.value)) && newOptions.length > 0) {
+        model.value = newOptions[0];
+      }
+    },
+    { immediate: true }
+);
+
+onMounted(() => {
+  // Falls du props.selectedRoom nicht nutzt, kannst du hier auch nochmal ein Fallback setzen
+  if (!model.value && props.options.length > 0) {
+    model.value = props.options[0];
+  }
+});
 </script>
 
 <template>
   <Select
-    v-model="model"
-    :options="options"
-    filter
-    :optionLabel="filterField"
-    :placeholder="placeholder"
-    size="large"
-    class="w-full md:w-56 bg-white! border-0! shadow-none!"
+      v-model="model"
+      :options="options"
+      filter
+      :optionLabel="filterField"
+      :placeholder="placeholder"
+      size="large"
+      class="w-full md:w-56 bg-white! border-0! shadow-none!"
   >
     <template #value="slotProps">
       <div v-if="slotProps.value" class="flex items-center">
-        <div class="text-3xl font-bold text-black">{{ slotProps.value.name }}</div>
+        <div class="text-3xl font-bold text-black">
+          Room {{ slotProps.value.roomId }}
+        </div>
       </div>
       <span v-else class="text-3xl font-bold text-black">
-        <span>
-          {{
-            options && options.length > 0 ? options[0].name : "No data"
-          }}
-        </span>
+        Room {{ options && options.length > 0 ? options[0].roomId : "No data" }}
       </span>
     </template>
     <template #option="slotProps">
       <div class="flex items-center">
-        <div>{{ slotProps.option.name }}</div>
+        <div>Room {{ slotProps.option.roomId }}</div>
       </div>
     </template>
   </Select>

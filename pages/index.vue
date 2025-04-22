@@ -51,6 +51,56 @@ const tabs = ref([
 
 loadingStore.setLoading(true);
 
+function setCards() {
+
+  console.log("Selected Rooms aber slay", selectedRoom.value);
+
+  // Set cards for the selected room
+  const cardTemperature = GlobalHelper.MapTemperature(selectedRoom.value.temperature);
+  const cardHumidity = GlobalHelper.MapHumidity(selectedRoom.value.humidity);
+  const cardAirQuality = GlobalHelper.MapAirQuality(selectedRoom.value.pressure);
+
+  if (cardTemperature.value !== undefined) {
+    // Vorhandene Karten ersetzen statt hinzufügen
+    cards.value = [cardTemperature, cardHumidity, cardAirQuality];
+  }
+
+  console.log("cards", cards.value);
+}
+
+function setCharts() {
+  console.log("Full roomsHistory:", roomsHistory.value);
+
+  // Charts zurücksetzen, damit nicht immer weiter angehängt wird
+  charts.value = [];
+
+  // 1️⃣ History des selektierten Raums auslesen (falls vorhanden)
+  const roomId = selectedRoom.value?.roomId;
+  const historyForSelected = roomId != null
+      ? roomsHistory.value[roomId] ?? []
+      : [];
+
+  console.log(`History für Raum ${roomId}:`, historyForSelected);
+
+  // 2️⃣ Diagrammdaten nur für den selektierten Raum erstellen
+  const temperatureData = GlobalHelper.MapChartDataTemperature(historyForSelected);
+  const humidityData    = GlobalHelper.MapChartDataHumidity(historyForSelected);
+  const airQualityData  = GlobalHelper.MapChartDataAirQuality(historyForSelected);
+
+  // 3️⃣ Options initialisieren
+  const chartOptions = new ChartOptions();
+
+  // 4️⃣ Charts-Array befüllen
+  charts.value.push(
+      { data: temperatureData, options: chartOptions },
+      { data: humidityData,    options: chartOptions },
+      { data: airQualityData,  options: chartOptions }
+  );
+
+  console.log("Charts für selektierten Raum:", charts.value);
+}
+
+
 onMounted(async () => {
   loadingStore.setLoading(true);
 
@@ -58,67 +108,94 @@ onMounted(async () => {
     `ws://${import.meta.env.VITE_API_URL}/api/roomDatas/ws`
   );
   webSocket.onmessage = (event) => {
+    loadingStore.setLoading(true);
+    console.log("Skibidi loading");
+
     const data = JSON.parse(event.data);
     latestFetch.value = new Date();
 
-    // the api gives multiple data from room, first we need to sort the data by roomId
-    rooms.value = data.reduce((acc: Room[], roomData: Room) => {
-      const existingRoom = acc.find((room) => room.id === roomData.id);
-      if (existingRoom) {
+    // 1️⃣ Jeden Raum aktualisieren oder hinzufügen:
+    data.forEach((roomData: any) => {
+      const existingRoom = rooms.value.find((room) => room.roomId === roomData.roomId);
+      if (existingRoom !== undefined) {
+        console.warn("Updated existing Room:", roomData.roomId);
         existingRoom.temperature = roomData.temperature;
-        existingRoom.humidity = roomData.humidity;
-        existingRoom.pressure = roomData.pressure;
-        existingRoom.timeStamp = roomData.timeStamp;
+        existingRoom.humidity    = roomData.humidity;
+        existingRoom.pressure    = roomData.pressure;
+        existingRoom.gas         = roomData.gas;
+        existingRoom.timeStamp   = roomData.timeStamp;
       } else {
-        acc.push(roomData);
+        console.warn("Added new Room:", roomData.roomId);
+        rooms.value.push({
+          roomId:    roomData.roomId,
+          temperature: roomData.temperature,
+          humidity:  roomData.humidity,
+          pressure:  roomData.pressure,
+          gas:       roomData.gas,
+          timeStamp: roomData.timeStamp,
+        });
       }
-      return acc;
-    }, [] as Room[]);
+    });
 
     console.log("rooms.value", rooms.value);
 
-    // Update roomsHistory for each room
-    rooms.value.forEach((room) => {
-      roomsHistory.value.push({
-        timeStamp: room.timeStamp,
-        temperature: room.temperature,
-      });
+    // 2️⃣ History pro Raum:
+    data.forEach((roomData: any) => {
+      const id = roomData.roomId;
+      // Hole oder initialisiere das Array für diese roomId
+      const historyForRoom = roomsHistory.value[id] ?? [];
+
+      // Optional: Nur hinzufügen, wenn neuer Timestamp
+      const lastEntry = historyForRoom[historyForRoom.length - 1];
+      if (!lastEntry || new Date(roomData.timeStamp) > new Date(lastEntry.timeStamp)) {
+        historyForRoom.push({
+          timeStamp:  roomData.timeStamp,
+          temperature: roomData.temperature,
+          humidity: roomData.humidity,
+          pressure: roomData.pressure,
+          airQuality: roomData.gas,
+        });
+      }
+
+      // Speichere zurück
+      roomsHistory.value[id] = historyForRoom;
     });
 
-    // Update selected room if needed
+    console.log("roomsHistory.value", roomsHistory.value);
+
+    // 3️⃣ Selected Room aktualisieren:
     if (!selectedRoom.value) {
       selectedRoom.value = rooms.value[0];
-    } else if (!rooms.value.some((room) => room.id === selectedRoom.value?.id)) {
+    } else if (!rooms.value.some((room) => room.roomId === selectedRoom.value.roomId)) {
       selectedRoom.value = rooms.value[0];
     }
 
-    // Set cards for the selected room
-    const cardTemperature = GlobalHelper.MapTemperature(selectedRoom.value.temperature);
-    const cardHumidity = GlobalHelper.MapHumidity(selectedRoom.value.humidity);
-    const cardAirQuality = GlobalHelper.MapAirQuality(selectedRoom.value.pressure);
+    // 4️⃣ Karten setzen:
+    setCards();
+    // 5️⃣ Charts setzen:
+    setCharts();
 
-    cards.value.push(cardTemperature, cardHumidity, cardAirQuality);
+    console.log("cards", cards.value);
+    console.log("selected room", selectedRoom.value);
 
-    // set diagram data
-    const temperatureData = GlobalHelper.MapChartDataTemperature(roomsHistory.value);
-    const humidityData = GlobalHelper.MapChartDataHumidity(roomsHistory.value);
-    const airQualityData = GlobalHelper.MapChartDataAirQuality(roomsHistory.value);
-
-    const chartOptions = new ChartOptions();
-
-    charts.value.push(
-      { data: temperatureData, options: chartOptions },
-      { data: humidityData, options: chartOptions },
-      { data: airQualityData, options: chartOptions }
-    );
-
-    console.log("WebSocket message received:", data);
-    console.log("roomsHistory.value", roomsHistory.value);
-    console.log("selected room ", selectedRoom.value);
+    loadingStore.setLoading(false);
   };
 
+
   loadingStore.setLoading(false);
+
+  console.error("Cool Rooms", rooms.value)
+
 });
+
+
+function roomSelected(room) {
+  console.log("Set new room", selectedRoom.value.roomId, room.roomId);
+  selectedRoom.value = room;
+  setCards();
+  setCharts();
+}
+
 </script>
 
 <template>
@@ -129,8 +206,9 @@ onMounted(async () => {
   <div v-else>
     <RoomSelectorCard
       :latestFetch="latestFetch"
-      :selectedRoom="selectedRoom"
       :rooms="rooms"
+      :selectedRoom="selectedRoom"
+      @roomSelected="roomSelected"
     />
 
     <RoomTable :room-data="rooms" />
