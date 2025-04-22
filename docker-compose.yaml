@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  vuejs:
+    build:
+      context: .
+    working_dir: /app
+    ports:
+      - 5059:443
+      - 5058:80
+    volumes:
+      - .:/app
+    command: sh -c "nginx -g 'daemon off;'"
+    networks:
+      - laravel
+
+networks:
+  laravel:
+    driver: bridge

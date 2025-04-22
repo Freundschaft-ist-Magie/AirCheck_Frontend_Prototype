@@ -95,7 +95,7 @@ onMounted(async () => {
   loadingStore.setLoading(true);
 
   const webSocket = new WebSocket(
-    `ws://${import.meta.env.VITE_API_URL}/api/roomDatas/ws`
+    `wss://${import.meta.env.VITE_API_URL}/api/roomDatas/ws`
   );
   webSocket.onmessage = (event) => {
     loadingStore.setLoading(true);

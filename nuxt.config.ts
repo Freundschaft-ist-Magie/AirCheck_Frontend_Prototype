@@ -15,6 +15,14 @@ export default defineNuxtConfig({
     ],
   },
 
+  nitro: {
+    prerender: {
+      crawlLinks: true,           // Standard‑Crawler aktivieren
+      failOnError: true,          // bleibt true, damit andere Fehler weiter geworfen werden
+      ignore: ['/forgot-password'] // diese Route überspringen
+    }
+  },
+
   // https://primevue.org/nuxt/
   primevue: {
     options: {
