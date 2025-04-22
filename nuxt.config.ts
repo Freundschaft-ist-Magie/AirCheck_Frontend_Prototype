@@ -37,5 +37,17 @@ export default defineNuxtConfig({
     '/login': {
       // Login page specific rules if needed
     }
+  },
+
+  app: {
+    head: {
+      link: [
+        {
+          rel: 'icon',
+          type: 'image/x-icon',
+          href: '/favicon.svg'
+        }
+      ]
+    }
   }
 })
