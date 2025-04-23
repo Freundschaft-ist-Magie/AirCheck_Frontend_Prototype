@@ -35,12 +35,12 @@
     "icon": "mdi:air-filter",
     "unit": "Ω",
     "normalRange": {
-      "low": 100000,
-      "high": 1000000
+      "low": 10000,
+      "high": 20000
     },
     "criticalText": {
-      "low": "Die Luftqualität ist ungewöhnlich gut. Könnte fast zu schön sein, um wahr zu sein.",
-      "high": "Die Partikel-Konzentration von Schadstoffen ist zu hoch. Lüften Sie den Raum, um die Luftqualität zu verbessern."
+      "high": "Die Luftqualität ist ungewöhnlich gut. Könnte fast zu schön sein, um wahr zu sein.",
+      "low": "Die Luftqualität ist schlecht. Lüften Sie den Raum, um die Luftqualität zu verbessern."
     },
     "chartColor": "#3357FF"
   },
