@@ -69,7 +69,12 @@ class GlobalHelper {
     const forecastColor = config.forecastColor;
 
     const labels = temperature.map((reading) => {
-      const date = new Date(reading.timeStamp).toISOString().split("T")[1].split(".")[0];
+const date = new Date(reading.timeStamp).toLocaleTimeString("de-CH", {
+  timeZone: "Europe/Zurich",
+  hour: "2-digit",
+  minute: "2-digit",
+  second: "2-digit",
+});
       return date;
     });
 
@@ -91,7 +96,12 @@ class GlobalHelper {
     const forecastColor = config.forecastColor;
 
     const labels = humidity.map((reading) => {
-      const date = new Date(reading.timeStamp).toISOString().split("T")[1].split(".")[0];
+const date = new Date(reading.timeStamp).toLocaleTimeString("de-CH", {
+  timeZone: "Europe/Zurich",
+  hour: "2-digit",
+  minute: "2-digit",
+  second: "2-digit",
+});
       return date;
     });
 
@@ -113,7 +123,12 @@ class GlobalHelper {
     const forecastColor = config.forecastColor;
 
     const labels = airQuality.map((reading) => {
-      const date = new Date(reading.timeStamp).toISOString().split("T")[1].split(".")[0];
+const date = new Date(reading.timeStamp).toLocaleTimeString("de-CH", {
+  timeZone: "Europe/Zurich",
+  hour: "2-digit",
+  minute: "2-digit",
+  second: "2-digit",
+});
       return date;
     });
 
@@ -134,7 +149,12 @@ class GlobalHelper {
     const forecastColor = config.forecastColor;
 
     const labels = pressure.map((reading) => {
-      const date = new Date(reading.timeStamp).toISOString().split("T")[1].split(".")[0];
+const date = new Date(reading.timeStamp).toLocaleTimeString("de-CH", {
+  timeZone: "Europe/Zurich",
+  hour: "2-digit",
+  minute: "2-digit",
+  second: "2-digit",
+});
       return date;
     });
 
@@ -157,7 +177,16 @@ class GlobalHelper {
     const selectedRoom = history.find(historyRoom => historyRoom.roomId === room.id).environmentData.temperature;
 
     const labels = selectedRoom.map((reading) => {
-      const date = new Date(reading.timestamp).toISOString().split("T")[0];
+const date = new Date(reading.timeStamp).toLocaleString("de-CH", {
+  timeZone: "Europe/Zurich",
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit",
+  second: "2-digit",
+});
+
       return GlobalHelper.formatDateToDayMonth(date);
     });
 
@@ -181,7 +210,16 @@ class GlobalHelper {
     const selectedRoom = history.find(historyRoom => historyRoom.roomId === room.id).environmentData.humidity;
 
     const labels = selectedRoom.map((reading) => {
-      const date = new Date(reading.timestamp).toISOString().split("T")[0];
+const date = new Date(reading.timeStamp).toLocaleString("de-CH", {
+  timeZone: "Europe/Zurich",
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit",
+  second: "2-digit",
+});
+
       return GlobalHelper.formatDateToDayMonth(date);
     });
 
@@ -205,7 +243,16 @@ class GlobalHelper {
     const selectedRoom = history.find(historyRoom => historyRoom.roomId === room.id).environmentData.airQuality;
 
     const labels = selectedRoom.map((reading) => {
-      const date = new Date(reading.timestamp).toISOString().split("T")[0];
+const date = new Date(reading.timeStamp).toLocaleString("de-CH", {
+  timeZone: "Europe/Zurich",
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit",
+  second: "2-digit",
+});
+
       return GlobalHelper.formatDateToDayMonth(date);
     });
 

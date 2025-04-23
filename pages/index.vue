@@ -164,8 +164,11 @@ onMounted(async () => {
 
     // 4️⃣ Karten setzen:
     setCards();
-    // 5️⃣ Charts setzen:
-    setCharts();
+
+    if (charts.value.length == 0) {
+      // 5️⃣ Charts setzen:
+      setCharts();
+    }
 
     loadingStore.setLoading(false);
   };
