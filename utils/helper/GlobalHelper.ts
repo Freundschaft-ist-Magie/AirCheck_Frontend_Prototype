@@ -52,6 +52,18 @@ class GlobalHelper {
     });
   }
 
+  public static MapPressure(pressure: number) {
+    const { title, icon, unit, normalRange, criticalText } = config.pressure;
+
+    return this.MapData(pressure, {
+      title,
+      icon,
+      unit,
+      normalRange,
+      criticalText
+    });
+  }
+
   public static MapChartDataTemperature(temperature: { timeStamp: string; temperature: number; }[], isForecast: boolean = false) {
     const { title, chartColor } = config.temperature;
     const forecastColor = config.forecastColor;
@@ -113,6 +125,27 @@ class GlobalHelper {
       false,
       isForecast ? forecastColor : chartColor,
       0.4
+    );
+
+    return new ChartData(labels, [dataset]);
+  }
+  public static MapChartDataPressure(pressure: { timeStamp: string; pressure: number; }[], isForecast: boolean = false) {
+    const { title, chartColor } = config.pressure;
+    const forecastColor = config.forecastColor;
+
+    const labels = pressure.map((reading) => {
+      const date = new Date(reading.timeStamp).toISOString().split("T")[1].split(".")[0];
+      return date;
+    });
+
+    const dataset = new Dataset(
+        title,
+        pressure.map((reading) => {
+          return Number(reading.pressure);
+        }),
+        false,
+        isForecast ? forecastColor : chartColor,
+        0.4
     );
 
     return new ChartData(labels, [dataset]);
