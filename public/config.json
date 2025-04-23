@@ -36,7 +36,7 @@
     "unit": "Ω",
     "normalRange": {
       "low": 10000,
-      "high": 20000
+      "high": 100000
     },
     "criticalText": {
       "high": "Die Luftqualität ist ungewöhnlich gut. Könnte fast zu schön sein, um wahr zu sein.",
@@ -47,7 +47,7 @@
   "pressure": {
     "title": "Luftdruck",
     "icon": "mdi:gauge",
-    "unit": "hPa",
+    "unit": "Pa",
     "normalRange": {
       "low": 980,
       "high": 1050
