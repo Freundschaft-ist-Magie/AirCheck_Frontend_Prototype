@@ -33,16 +33,30 @@
   "airQuality": {
     "title": "Luftqualität",
     "icon": "mdi:air-filter",
-    "unit": "ppm",
+    "unit": "Ω",
     "normalRange": {
-      "low": 0,
-      "high": 1400
+      "low": 10000,
+      "high": 20000
     },
     "criticalText": {
-      "low": "Die Luftqualität ist ungewöhnlich gut. Könnte fast zu schön sein, um wahr zu sein.",
-      "high": "Die CO₂-Konzentration ist zu hoch. Lüften Sie den Raum, um die Luftqualität zu verbessern."
+      "high": "Die Luftqualität ist ungewöhnlich gut. Könnte fast zu schön sein, um wahr zu sein.",
+      "low": "Die Luftqualität ist schlecht. Lüften Sie den Raum, um die Luftqualität zu verbessern."
     },
     "chartColor": "#3357FF"
+  },
+  "pressure": {
+    "title": "Luftdruck",
+    "icon": "mdi:gauge",
+    "unit": "hPa",
+    "normalRange": {
+      "low": 980,
+      "high": 1050
+    },
+    "criticalText": {
+      "low": "Der Luftdruck ist ungewöhnlich niedrig. Dies könnte auf schlechtes Wetter oder einen Sturm hindeuten.",
+      "high": "Der Luftdruck ist sehr hoch. Dies könnte auf stabiles, aber eventuell drückendes Wetter hindeuten."
+    },
+  "chartColor": "#3357FF"
   },
   "forecastColor": "#000"
 }

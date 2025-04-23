@@ -21,12 +21,14 @@ const historyCharts = ref<{ data: ChartData; options: ChartOptions }[]>([]);
 const chartTitles = ref([
   "Temperatur in den letzten 24 h",
   "Luftfeuchtigkeit in den letzten 24 h",
-  "CO₂ Level in den letzten 24 h",
+  "Luftqualität Level in den letzten 24 h",
+  "Luftdruck in den letzten 24h",
 ]);
 const monthChartTitles = ref([
   "Temperatur in den letzten 30 Tagen",
   "Luftfeuchtigkeit in den letzten 30 Tagen",
-  "CO₂ Level in den letzten 30 Tagen",
+  "Luftqualität in den letzten 30 Tagen",
+  "Luftdruck in den letzten 30 Tagen",
 ]);
 const tabs = ref([
   {
@@ -47,6 +49,12 @@ const tabs = ref([
     dayChart: 2,
     monthChart: 2,
   },
+  {
+    title: "Luftdruck",
+    value: "3",
+    dayChart: 3,
+    monthChart: 3,
+  },
 ]);
 
 loadingStore.setLoading(true);
@@ -55,11 +63,13 @@ function setCards() {
   // Set cards for the selected room
   const cardTemperature = GlobalHelper.MapTemperature(selectedRoom.value.temperature);
   const cardHumidity = GlobalHelper.MapHumidity(selectedRoom.value.humidity);
-  const cardAirQuality = GlobalHelper.MapAirQuality(selectedRoom.value.pressure);
+  const cardAirQuality = GlobalHelper.MapAirQuality(selectedRoom.value.gas);
+  const cardPressure = GlobalHelper.MapPressure(selectedRoom.value.pressure);
+
 
   if (cardTemperature.value !== undefined) {
     // Vorhandene Karten ersetzen statt hinzufügen
-    cards.value = [cardTemperature, cardHumidity, cardAirQuality];
+    cards.value = [cardTemperature, cardHumidity, cardAirQuality, cardPressure];
   }
 }
 
@@ -76,6 +86,7 @@ function setCharts() {
   const temperatureData = GlobalHelper.MapChartDataTemperature(historyForSelected);
   const humidityData = GlobalHelper.MapChartDataHumidity(historyForSelected);
   const airQualityData = GlobalHelper.MapChartDataAirQuality(historyForSelected);
+  const pressureData = GlobalHelper.MapChartDataPressure(historyForSelected);
 
   // 3️⃣ Options initialisieren
   const chartOptions = new ChartOptions();
@@ -84,7 +95,8 @@ function setCharts() {
   charts.value.push(
     { data: temperatureData, options: chartOptions },
     { data: humidityData, options: chartOptions },
-    { data: airQualityData, options: chartOptions }
+    { data: airQualityData, options: chartOptions },
+    { data: pressureData, options: chartOptions },
   );
 }
 
@@ -221,7 +233,7 @@ function triggerTheInferno() {
 
     <RoomTable :room-data="roomsHistory" :selected-room="selectedRoom" class="mt-4" />
 
-    <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 items-center">
+    <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-4 items-center">
       <StatisticCard
         v-for="card in cards"
         :key="card.title"
@@ -276,7 +288,7 @@ function triggerTheInferno() {
         :chartData="chart.data"
         :chartOptions="chart.options"
         chartType="line"
-        class="flex-1 w-full sm:max-1/2 md:w-1/3"
+        class="flex-1 w-full sm:max-1/2 md:w-1/2"
       />
     </div>
 
