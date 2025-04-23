@@ -21,13 +21,13 @@ const historyCharts = ref<{ data: ChartData; options: ChartOptions }[]>([]);
 const chartTitles = ref([
   "Temperatur in den letzten 24 h",
   "Luftfeuchtigkeit in den letzten 24 h",
-  "CO₂ Level in den letzten 24 h",
+  "Luftqualität Level in den letzten 24 h",
   "Luftdruck in den letzten 24h",
 ]);
 const monthChartTitles = ref([
   "Temperatur in den letzten 30 Tagen",
   "Luftfeuchtigkeit in den letzten 30 Tagen",
-  "CO₂ Level in den letzten 30 Tagen",
+  "Luftqualität in den letzten 30 Tagen",
   "Luftdruck in den letzten 30 Tagen",
 ]);
 const tabs = ref([
