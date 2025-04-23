@@ -33,10 +33,10 @@
   "airQuality": {
     "title": "Luftqualität",
     "icon": "mdi:air-filter",
-    "unit": "ppm",
+    "unit": "Ω",
     "normalRange": {
-      "low": 0,
-      "high": 1400
+      "low": 100000,
+      "high": 1000000
     },
     "criticalText": {
       "low": "Die Luftqualität ist ungewöhnlich gut. Könnte fast zu schön sein, um wahr zu sein.",
