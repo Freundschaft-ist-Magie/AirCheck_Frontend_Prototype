@@ -7,8 +7,8 @@
     "icon": "mdi:thermometer-low",
     "unit": "°C",
     "normalRange": {
-      "low": 20,
-      "high": 25
+      "low": 15,
+      "high": 30
     },
     "criticalText": {
       "low": "Die Temperatur ist zu niedrig. Überprüfen Sie die Heizquelle oder schliessen Sie die Fenster.",
