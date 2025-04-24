@@ -16,4 +16,4 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: jzelAdminBBZW2006/aircheck-frontend
+          tags: jzeladminbbzw2006/aircheck-frontend
