@@ -13,6 +13,7 @@ const roomsStore = useRoomsStore();
 
 const latestFetch = ref(new Date());
 const selectedRoom = ref<Room | null>(null);
+const countdown = ref(30);
 const rooms = ref<Room[]>([]);
 const roomsHistory = ref<
   Record<
@@ -58,6 +59,16 @@ const hasHistoryDataForSelectedRoom = computed(() => {
   const history = roomsHistory.value[selectedRoom.value.roomId];
   return history && history.length > 0;
 });
+
+function startCountdown() {
+  countdown.value = 30;
+  setInterval(() => {
+    countdown.value--;
+    if (countdown.value <= 0) {
+      countdown.value = 30;
+    }
+  }, 1000);
+}
 
 function setCards() {
   cards.value = []; // Clear existing cards first to avoid duplicates if called multiple times
@@ -272,6 +283,11 @@ function setupRoomSpecificWebSocket(room: Room | null) {
       event.code,
       event.reason
     );
+
+  // Start countdown timer (only in browser; not during SSR)
+  if (process.client) {
+    startCountdown();
+  }
 }
 
 function roomSelected(room: Room) {
@@ -347,6 +363,7 @@ function launchFlyingFlames(count: number) {
       :latestFetch="latestFetch"
       :rooms="rooms"
       :selectedRoom="selectedRoom"
+      :countdown="countdown"
       @roomSelected="roomSelected"
     />
 
