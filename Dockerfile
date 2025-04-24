@@ -16,7 +16,7 @@ RUN echo "VITE_API_URL=\"localhost:8081\"" > ./.env
 RUN echo "VITE_API_ENDPOINT_PREFIX=\"api/\"" >> ./.env
 
 # Build the project
-RUN npm run build
+RUN NODE_OPTIONS=--max-old-space-size=2048 npm run build
 
 # Build Stage 2
 
