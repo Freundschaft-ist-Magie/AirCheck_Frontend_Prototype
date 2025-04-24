@@ -167,9 +167,9 @@ onMounted(async () => {
         const lastEntry = historyForRoom[historyForRoom.length - 1];
         if (!lastEntry || new Date(roomData.timeStamp) > new Date(lastEntry.timeStamp)) {
           // Keep history size manageable if desired (e.g., last 100 entries)
-          if (historyForRoom.length > 100) {
-            historyForRoom.shift();
-          }
+          // if (historyForRoom.length > 100) {
+          //   historyForRoom.shift();
+          // }
           historyForRoom.push({
             timeStamp: roomData.timeStamp,
             temperature: roomData.temperature,
@@ -337,7 +337,7 @@ function launchFlyingFlames(count: number) {
     setTimeout(
       () => flame.remove(),
       parseFloat(flame.style.animationDuration) * 1000 +
-        parseFloat(flame.style.animationDelay) * 1000
+      parseFloat(flame.style.animationDelay) * 1000
     );
   }
 }
@@ -349,10 +349,7 @@ function launchFlyingFlames(count: number) {
   </div>
 
   <!-- Fallback 1: No Rooms -->
-  <div
-    v-else-if="!hasRooms"
-    class="mt-10 p-6 border border-dashed border-gray-400 rounded-lg bg-gray-50 text-center"
-  >
+  <div v-else-if="!hasRooms" class="mt-10 p-6 border border-dashed border-gray-400 rounded-lg bg-gray-50 text-center">
     <h2 class="text-xl font-semibold text-gray-700 mb-2">Keine Räume verfügbar</h2>
     <p class="text-gray-500">
       Es wurden keine Raumdaten empfangen. Bitte überprüfen Sie die Sensoren und die
@@ -362,44 +359,22 @@ function launchFlyingFlames(count: number) {
 
   <!-- Main content -->
   <div v-else id="main-content">
-    <RoomSelectorCard
-      :latestFetch="latestFetch"
-      :rooms="rooms"
-      :selectedRoom="selectedRoom"
-      :countdown="countdown"
-      @roomSelected="roomSelected"
-    />
+    <RoomSelectorCard :latestFetch="latestFetch" :rooms="rooms" :selectedRoom="selectedRoom" :countdown="countdown"
+      @roomSelected="roomSelected" />
 
-    <div
-      v-if="selectedRoom"
-      class="mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-center"
-    >
-      <StatisticCard
-        v-for="card in cards"
-        :key="card.title"
-        class="stat-card"
-        :title="card.title"
-        :value="card.value"
-        :icon="card.icon"
-        :unit="card.unit"
-        :normalRange="card.normalRange"
-        :criticalText="card.criticalText"
-      />
+    <div v-if="selectedRoom" class="mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-center">
+      <StatisticCard v-for="card in cards" :key="card.title" class="stat-card" :title="card.title" :value="card.value"
+        :icon="card.icon" :unit="card.unit" :normalRange="card.normalRange" :criticalText="card.criticalText" />
     </div>
 
-    <div
-      v-else
-      class="mt-4 p-4 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-md text-center"
-    >
+    <div v-else class="mt-4 p-4 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-md text-center">
       Bitte wählen Sie oben einen Raum aus, um Details anzuzeigen.
     </div>
 
     <div v-if="selectedRoom" class="mt-4">
       <!-- Fallback 2: No History Data -->
-      <div
-        v-if="!hasHistoryDataForSelectedRoom"
-        class="p-4 border border-dashed border-yellow-400 rounded-lg bg-yellow-50 dark:bg-yellow-900/50 text-center"
-      >
+      <div v-if="!hasHistoryDataForSelectedRoom"
+        class="p-4 border border-dashed border-yellow-400 rounded-lg bg-yellow-50 dark:bg-yellow-900/50 text-center">
         <p class="text-yellow-700 dark:text-yellow-300">
           Für den Raum "{{ selectedRoom.roomId }}" liegen derzeit keine Verlaufsdaten vor.
         </p>
@@ -414,44 +389,26 @@ function launchFlyingFlames(count: number) {
         <!-- Mobile Tabs -->
         <div class="mt-4 block sm:hidden">
           <Tabs value="0">
-            <TabList
-              class="flex border-b border-gray-200 dark:border-gray-700 overflow-x-auto"
-            >
-              <Tab
-                v-for="tab in tabs"
-                :key="tab.title"
-                :value="tab.value"
-                v-slot="{ selected }"
-                as="template"
-              >
-                <button
-                  :class="[
-                    'px-4 py-2 text-sm font-medium leading-5 whitespace-nowrap',
-                    'focus:outline-none focus:ring-2 ring-offset-1 ring-offset-blue-400 ring-white ring-opacity-60',
-                    selected
-                      ? 'text-blue-700 bg-blue-100 dark:text-blue-300 dark:bg-blue-900 border-b-2 border-blue-500'
-                      : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200',
-                  ]"
-                >
+            <TabList class="flex border-b border-gray-200 dark:border-gray-700 overflow-x-auto">
+              <Tab v-for="tab in tabs" :key="tab.title" :value="tab.value" v-slot="{ selected }" as="template">
+                <button :class="[
+                  'px-4 py-2 text-sm font-medium leading-5 whitespace-nowrap',
+                  'focus:outline-none focus:ring-2 ring-offset-1 ring-offset-blue-400 ring-white ring-opacity-60',
+                  selected
+                    ? 'text-blue-700 bg-blue-100 dark:text-blue-300 dark:bg-blue-900 border-b-2 border-blue-500'
+                    : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200',
+                ]">
                   {{ tab.title }}
                 </button>
               </Tab>
             </TabList>
             <TabPanels class="mt-2">
-              <TabPanel
-                v-for="tab in tabs"
-                :key="tab.value + '-panel'"
-                :value="tab.value"
-                class="p-0 focus:outline-none"
-              >
+              <TabPanel v-for="tab in tabs" :key="tab.value + '-panel'" :value="tab.value"
+                class="p-0 focus:outline-none">
                 <div class="mt-4 flex flex-col gap-4">
-                  <StatisticDiagram
-                    v-if="charts[tab.dayChart]"
-                    :title="chartTitles[tab.dayChart]"
-                    :chartData="charts[tab.dayChart].data"
-                    :chartOptions="charts[tab.dayChart].options"
-                    chartType="line"
-                  />
+                  <StatisticDiagram v-if="charts[tab.dayChart]" :title="chartTitles[tab.dayChart]"
+                    :chartData="charts[tab.dayChart].data" :chartOptions="charts[tab.dayChart].options"
+                    chartType="line" />
                   <p v-else class="text-sm text-gray-500 text-center py-4">
                     Tages-Diagramm nicht verfügbar.
                   </p>
@@ -474,15 +431,9 @@ function launchFlyingFlames(count: number) {
 
         <!-- Desktop Day Charts -->
         <div class="mt-4 hidden sm:flex flex-wrap gap-4">
-          <StatisticDiagram
-            v-for="(chart, index) in charts"
-            :key="'day-' + index"
-            :title="chartTitles[index]"
-            :chartData="chart.data"
-            :chartOptions="chart.options"
-            chartType="line"
-            class="flex-grow w-full md:w-[calc(50%-0.5rem)] min-w-[250px]"
-          />
+          <StatisticDiagram v-for="(chart, index) in charts" :key="'day-' + index" :title="chartTitles[index]"
+            :chartData="chart.data" :chartOptions="chart.options" chartType="line"
+            class="flex-grow w-full md:w-[calc(50%-0.5rem)] min-w-[250px]" />
           <!-- Add a placeholder if charts array is empty but history exists (shouldn't normally happen with current logic, but safe) -->
           <p v-if="charts.length === 0" class="w-full text-center text-gray-500 py-4">
             Keine Diagramme zum Anzeigen.
@@ -515,33 +466,43 @@ function launchFlyingFlames(count: number) {
   0% {
     transform: translate(1px, 1px) rotate(0deg);
   }
+
   10% {
     transform: translate(-1px, -2px) rotate(-1deg);
   }
+
   20% {
     transform: translate(-3px, 0px) rotate(1deg);
   }
+
   30% {
     transform: translate(3px, 2px) rotate(0deg);
   }
+
   40% {
     transform: translate(1px, -1px) rotate(1deg);
   }
+
   50% {
     transform: translate(-1px, 2px) rotate(-1deg);
   }
+
   60% {
     transform: translate(-3px, 1px) rotate(0deg);
   }
+
   70% {
     transform: translate(3px, 1px) rotate(-1deg);
   }
+
   80% {
     transform: translate(-1px, -1px) rotate(1deg);
   }
+
   90% {
     transform: translate(1px, 2px) rotate(0deg);
   }
+
   100% {
     transform: translate(1px, -2px) rotate(-1deg);
   }
@@ -551,9 +512,11 @@ function launchFlyingFlames(count: number) {
   0% {
     box-shadow: 0 0 10px red;
   }
+
   50% {
     box-shadow: 0 0 30px orange;
   }
+
   100% {
     box-shadow: 0 0 10px red;
   }
@@ -564,9 +527,11 @@ function launchFlyingFlames(count: number) {
     transform: translateX(-100px) translateY(0px) scale(0.5);
     opacity: 0;
   }
+
   10% {
     opacity: 1;
   }
+
   100% {
     transform: translateX(110vw) translateY(-200px) scale(1.5);
     opacity: 0;
@@ -577,7 +542,8 @@ function launchFlyingFlames(count: number) {
   position: fixed;
   width: 40px;
   height: 40px;
-  background-image: url("https://c.tenor.com/K3j9pwWlME0AAAAC/tenor.gif"); /* Oder ein SVG oder Emoji 🔥 */
+  background-image: url("https://c.tenor.com/K3j9pwWlME0AAAAC/tenor.gif");
+  /* Oder ein SVG oder Emoji 🔥 */
   background-size: cover;
   z-index: 9999;
   pointer-events: none;

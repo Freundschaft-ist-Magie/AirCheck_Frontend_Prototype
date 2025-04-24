@@ -52,8 +52,8 @@
     "icon": "mdi:gauge",
     "unit": "Pa",
     "normalRange": {
-      "low": 980,
-      "high": 1050
+      "low": 98000,
+      "high": 105000
     },
     "criticalText": {
       "low": "Der Luftdruck ist ungewöhnlich niedrig. Dies könnte auf schlechtes Wetter oder einen Sturm hindeuten.",
