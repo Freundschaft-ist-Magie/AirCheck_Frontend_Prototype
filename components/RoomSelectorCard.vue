@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import Room from "~/models/Room";
-import RoomSelector from "~/components/roomSelector.vue"; // falls nötig importieren
+import RoomSelector from "~/components/RoomSelector.vue"; // falls nötig importieren
 import { defineEmits } from 'vue';
 
 defineProps<{
