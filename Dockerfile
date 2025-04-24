@@ -12,6 +12,8 @@ RUN npm i
 
 # Copy the entire project
 COPY . ./
+RUN echo "VITE_API_URL=\"localhost:8081\"" > ./.env
+RUN echo "VITE_API_ENDPOINT_PREFIX=\"api/\"" >> ./.env
 
 # Build the project
 RUN npm run build
@@ -27,8 +29,6 @@ COPY --from=build /app/.output/ ./
 # Change the port and host
 ENV PORT 80
 ENV HOST 0.0.0.0
-ENV VITE_API_URL "localhost:8081"
-ENV VITE_API_ENDPOINT_PREFIX "api/"
 
 EXPOSE 80
 
