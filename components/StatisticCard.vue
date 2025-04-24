@@ -30,7 +30,7 @@ const isCritical = computed(() => isLow.value || isHigh.value);
       </h3>
       <Icon :name="icon" class="text-3xl text-black" />
     </div>
-    <p class="text-2xl font-bold">{{ value }} {{ unit }}</p>
+    <p class="text-2xl font-bold">{{ parseFloat(value.toFixed(2)) }} {{ unit }}</p>
     <p class="text-gray-500">
       Normaler Bereich:
       <span> {{ normalRange.low }} {{ unit }} - {{ normalRange.high }} {{ unit }} </span>
