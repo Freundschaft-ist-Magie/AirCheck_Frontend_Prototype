@@ -99,7 +99,7 @@ function setCharts() {
       { data: temperatureData, options: chartOptions },
       { data: humidityData, options: chartOptions },
       { data: airQualityData, options: chartOptions },
-      { data: pressureData, options: chartOptions },
+      { data: pressureData, options: chartOptions }
     );
   }
 }
@@ -232,6 +232,14 @@ onMounted(async () => {
     // Decide if UI should be cleared or state maintained
     // loadingStore.setLoading(false);
   };
+
+  // refresh charts every 30 seconds
+  setInterval(() => {
+    if (selectedRoom.value && hasHistoryDataForSelectedRoom.value) {
+      setCharts();
+      console.log("🔄 Charts updated (interval refresh)");
+    }
+  }, 30000);
 });
 
 function setupRoomSpecificWebSocket(room: Room | null) {
