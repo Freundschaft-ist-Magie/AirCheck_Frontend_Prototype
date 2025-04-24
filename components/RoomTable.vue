@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed } from "vue";
+import { computed } from "vue";
 
 const props = defineProps({
   roomData: Array, // Das komplette Array (mit den Subarrays pro Raum)
@@ -17,8 +17,7 @@ const filteredRoomData = computed(() => {
   // Optional: Id hinzufügen, wenn gewünscht
   return data.map((entry, index) => ({
     id: index + 1,
-    ...entry,
-    roomId: props.selectedRoom.roomId,
+    ...entry
   }));
 });
 </script>
@@ -35,13 +34,12 @@ const filteredRoomData = computed(() => {
             :rows="5"
             :rowsPerPageOptions="[5, 10, 20, 50]"
         >
-          <Column field="id" header="Id"></Column>
+          <Column field="id" header="#"></Column>
           <Column field="humidity" header="Feuchtigkeit"></Column>
           <Column field="temperature" header="Temperatur"></Column>
           <Column field="pressure" header="Druck"></Column>
           <Column field="airQuality" header="Luftqualität"></Column>
           <Column field="timeStamp" header="Zeitstempel"></Column>
-          <Column field="roomId" header="Raum Id"></Column>
         </DataTable>
       </AccordionContent>
     </AccordionPanel>
