@@ -4,6 +4,10 @@ import { useLoadingStore } from "@/utils/stores/base/LoadingStore";
 import { useToastStore } from "@/utils/stores/base/ToastStore";
 import { get, post } from "@/utils/services/base/ApiService";
 
+definePageMeta({
+  layout: "not-logged-in",
+});
+
 // Form data
 const email = ref("");
 const password = ref("");
