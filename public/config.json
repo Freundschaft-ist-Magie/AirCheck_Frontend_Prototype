@@ -52,7 +52,7 @@
     "icon": "mdi:gauge",
     "unit": "Pa",
     "normalRange": {
-      "low": 98000,
+      "low": 95000,
       "high": 105000
     },
     "criticalText": {
