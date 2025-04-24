@@ -2,6 +2,9 @@
   "appName": "Air Check",
   "teamName": "Team:0",
   "Version": "1.0.0",
+  "countdown": {
+    "timerSeconds": 30
+  },
   "temperature": {
     "title": "Temperatur",
     "icon": "mdi:thermometer-low",
@@ -56,7 +59,7 @@
       "low": "Der Luftdruck ist ungewöhnlich niedrig. Dies könnte auf schlechtes Wetter oder einen Sturm hindeuten.",
       "high": "Der Luftdruck ist sehr hoch. Dies könnte auf stabiles, aber eventuell drückendes Wetter hindeuten."
     },
-  "chartColor": "#3357FF"
+    "chartColor": "#3357FF"
   },
   "forecastColor": "#000"
 }

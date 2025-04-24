@@ -7,13 +7,14 @@ import GlobalHelper from "~/utils/helper/GlobalHelper";
 import StatisticCardObj from "~/models/StatisticCardObj";
 import ChartData from "~/models/ChartData";
 import ChartOptions from "~/models/ChartOptions";
+import { getConfig } from "~/utils/helper/ConfigLoader";
 
 const loadingStore = useLoadingStore();
 const roomsStore = useRoomsStore();
 
 const latestFetch = ref(new Date());
 const selectedRoom = ref<Room | null>(null);
-const countdown = ref(30);
+const countdown = ref(0);
 const rooms = ref<Room[]>([]);
 const roomsHistory = ref<
   Record<
@@ -60,12 +61,12 @@ const hasHistoryDataForSelectedRoom = computed(() => {
   return history && history.length > 0;
 });
 
-function startCountdown() {
-  countdown.value = 30;
+function startCountdown(countdownSeconds: number) {
+  countdown.value = countdownSeconds;
   setInterval(() => {
     countdown.value--;
     if (countdown.value <= 0) {
-      countdown.value = 30;
+      countdown.value = countdownSeconds;
     }
   }, 1000);
 }
@@ -117,6 +118,8 @@ function setCharts() {
 
 onMounted(async () => {
   loadingStore.setLoading(true);
+  const config = await getConfig();
+  const countdownSeconds = config!.countdown?.timerSeconds || 30; // fallback to 30 if missing
 
   const webSocket = new WebSocket(
     `ws://${import.meta.env.VITE_API_URL}/api/roomDatas/ws`
@@ -244,13 +247,18 @@ onMounted(async () => {
     // loadingStore.setLoading(false);
   };
 
-  // refresh charts every 30 seconds
-  setInterval(() => {
-    if (selectedRoom.value && hasHistoryDataForSelectedRoom.value) {
-      setCharts();
-      console.log("🔄 Charts updated (interval refresh)");
-    }
-  }, 30000);
+  // Start countdown timer (only in browser; not during SSR)
+  if (process.client) {
+    startCountdown(countdownSeconds);
+
+    // refresh charts every 30 seconds
+    setInterval(() => {
+      if (selectedRoom.value && hasHistoryDataForSelectedRoom.value) {
+        setCharts();
+        console.log("🔄 Charts updated (interval refresh)");
+      }
+    }, countdownSeconds * 1000); // convert to milliseconds
+  }
 });
 
 function setupRoomSpecificWebSocket(room: Room | null) {
@@ -283,11 +291,6 @@ function setupRoomSpecificWebSocket(room: Room | null) {
       event.code,
       event.reason
     );
-
-  // Start countdown timer (only in browser; not during SSR)
-  if (process.client) {
-    startCountdown();
-  }
 }
 
 function roomSelected(room: Room) {
