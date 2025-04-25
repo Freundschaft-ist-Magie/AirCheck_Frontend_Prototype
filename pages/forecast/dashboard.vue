@@ -16,7 +16,7 @@ const charts = ref<{ data: ChartData; options: ChartOptions }[]>([]);
 const metrics = [
   { label: "Temperatur", value: "Temperatur" },
   { label: "Luftfeuchtigkeit", value: "Luftfeuchtigkeit" },
-  { label: "CO2 Level", value: "CO2 Level" },
+  { label: "CO₂ Level", value: "CO₂ Level" },
 ];
 
 // Add computed property to get the current chart based on selected metric
@@ -27,7 +27,7 @@ const currentChart = computed(() => {
     return charts.value[0];
   } else if (selectedMetric.value === "Luftfeuchtigkeit") {
     return charts.value[1];
-  } else if (selectedMetric.value === "CO2 Level") {
+  } else if (selectedMetric.value === "CO₂ Level") {
     return charts.value[2];
   }
 
@@ -72,7 +72,7 @@ onMounted(async () => {
 
     // Update rooms with fetched data
     rooms.value = fetchedRooms.map((room: any) => {
-      return new Room(room.id, room.name, room.description, {
+      return new Room(room.roomId, room.name, room.description, {
         temperature: room.environmentData.temperature,
         humidity: room.environmentData.humidity,
         airQuality: room.environmentData.airQuality,
@@ -82,14 +82,14 @@ onMounted(async () => {
     selectedRoom.value = rooms.value[0];
 
     // Find the forecast for the selected room
-    const roomForecast = forecasts.find((f) => f.id === selectedRoom.value?.id);
+    const roomForecast = forecasts.find((f) => f.roomId === selectedRoom.value?.id);
 
     if (!roomForecast) {
       showErrorToast(
         "Fehler",
         `Keine Prognosedaten für Raum "${selectedRoom.value.name}" gefunden.`
       );
-      console.error(`No forecast found for room with ID ${selectedRoom.value.id}`);
+      console.error(`No forecast found for room with ID ${selectedRoom.value.roomId}`);
       loading.value = false;
       return;
     }
@@ -146,7 +146,7 @@ onMounted(async () => {
       const missingForecasts = [];
       if (!hasTempForecast) missingForecasts.push("Temperatur");
       if (!hasHumidityForecast) missingForecasts.push("Luftfeuchtigkeit");
-      if (!hasAirQualityForecast) missingForecasts.push("CO2 Level");
+      if (!hasAirQualityForecast) missingForecasts.push("CO₂ Level");
 
       showWarningToast(
         "Hinweis",

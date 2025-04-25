@@ -184,7 +184,7 @@ watch(
     </Message>
 
     <div
-      class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-3 bg-gray-50 border rounded-md"
+      class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 bg-gray-50 border rounded-md"
     >
       <div class="flex items-center gap-2">
         <!-- Master Checkbox -->
@@ -230,14 +230,14 @@ watch(
         :key="groupName"
         class="mb-6"
       >
-        <h2 class="text-xl font-semibold mb-3 text-gray-700">
+        <h2 class="text-xl font-semibold mb-4 text-gray-700">
           {{ groupName }}
         </h2>
         <div class="flex flex-col gap-3">
           <div
             v-for="n in groupNotifications"
             :key="n.id"
-            class="flex gap-3 items-center bg-white p-3 border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200"
+            class="flex gap-3 items-center bg-white p-4 border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200"
             :class="{ 'opacity-70 bg-gray-50': n.read }"
           >
             <div class="flex-shrink-0">

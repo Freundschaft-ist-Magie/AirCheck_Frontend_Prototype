@@ -54,7 +54,7 @@ export const useUserStore = defineStore("user", () => {
       console.error("Fehler beim Erstellen eines neuen Benutzers:", e);
 
       useToastStore().setToast(
-        "danger",
+        "error",
         "Fehler",
         "Benutzer konnte nicht hinzugefügt werden."
       );
@@ -87,7 +87,7 @@ export const useUserStore = defineStore("user", () => {
       console.error("Konnte Benutzer mit ID nicht aktualisieren:", user.id);
 
       useToastStore().setToast(
-        "danger",
+        "error",
         "Fehler",
         "Benutzer konnte nicht aktualisiert werden."
       );
@@ -108,7 +108,7 @@ export const useUserStore = defineStore("user", () => {
       console.error("Benutzer mit ID nicht gefunden:", user.id);
 
       useToastStore().setToast(
-        "danger",
+        "error",
         "Fehler",
         "Benutzer konnte nicht gelöscht werden."
       );

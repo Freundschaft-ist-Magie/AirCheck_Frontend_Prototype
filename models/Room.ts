@@ -1,20 +1,16 @@
-import SensorData from '~/models/SensorData';
-
 class Room {
   id: number;
-  name: string;
-  description: string;
-  environmentData: {
-    temperature: SensorData[];
-    humidity: SensorData[];
-    airQuality: SensorData[];
-  }
+  macAddress: string;
+  isBurning: boolean;
 
-  constructor(id: number, name: string, description: string, environmentData: { temperature: SensorData[]; humidity: SensorData[]; airQuality: SensorData[] }) {
+  constructor(
+    id: number,
+    macAddress: string,
+    isBurning: boolean
+  ) {
     this.id = id;
-    this.name = name;
-    this.description = description;
-    this.environmentData = environmentData;
+    this.macAddress = macAddress;
+    this.isBurning = isBurning;
   }
 }
 

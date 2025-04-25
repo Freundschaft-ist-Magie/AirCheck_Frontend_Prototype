@@ -8,6 +8,7 @@
     "eslint.config.mjs": ".eslintignore, .eslintrc.cjs",
     "tailwind.config.js": "postcss.config.js",
     "nuxt.config.ts": "postcss.config.js",
+    "Dockerfile": "docker-compose.yml, .dockerignore",
   },
   "files.exclude": {
     "node_modules": true,

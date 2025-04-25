@@ -1,14 +1,31 @@
 class StatisticCardObj {
   title: string;
-  text: string;
+  value: number;
   icon: string;
-  normalRange: string;
+  unit: string;
+  normalRange: {
+    low: number;
+    high: number;
+  };
+  criticalText: {
+    low: string;
+    high: string;
+  };
 
-  constructor(title: string, text: string, icon: string, normalRange: string) {
+  constructor(
+    title: string,
+    value: number,
+    icon: string,
+    unit: string,
+    normalRange: { low: number; high: number },
+    criticalText: { low: string; high: string }
+  ) {
     this.title = title;
-    this.text = text;
+    this.value = value;
     this.icon = icon;
+    this.unit = unit;
     this.normalRange = normalRange;
+    this.criticalText = criticalText;
   }
 }
 

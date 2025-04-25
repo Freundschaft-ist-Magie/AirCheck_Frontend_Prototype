@@ -4,49 +4,83 @@ import Dataset from "~/models/Dataset";
 import type SensorData from "~/models/SensorData";
 
 class GlobalHelper {
-  public static MapTemperature(themperature: number) {
-    const { title, icon, normalRange } = config.temperature;
+  private static MapData(value: number, { title, icon, unit, normalRange, criticalText }: any) {
     return {
       title,
-      text: themperature + " °C",
+      value,
       icon,
+      unit,
       normalRange,
+      criticalText
     };
+  }
+
+  public static MapTemperature(temperature: number) {
+    const { title, icon, unit, normalRange, criticalText } = config.temperature;
+
+    return this.MapData(temperature, {
+      title,
+      icon,
+      unit,
+      normalRange,
+      criticalText
+    });
   }
 
   public static MapHumidity(humidity: number) {
-    const { title, icon, normalRange } = config.humidity;
-    return {
+    const { title, icon, unit, normalRange, criticalText } = config.humidity;
+
+    return this.MapData(humidity, {
       title,
-      text: humidity + " %",
       icon,
+      unit,
       normalRange,
-    };
+      criticalText
+    });
   }
 
   public static MapAirQuality(airQuality: number) {
-    const { title, icon, normalRange } = config.airQuality;
-    return {
+    const { title, icon, unit, normalRange, criticalText } = config.airQuality;
+
+    return this.MapData(airQuality, {
       title,
-      text: airQuality + " ppm",
       icon,
+      unit,
       normalRange,
-    };
+      criticalText
+    });
   }
 
-  public static MapChartDataTemperature(temperature: SensorData[], isForecast: boolean = false) {
+  public static MapPressure(pressure: number) {
+    const { title, icon, unit, normalRange, criticalText } = config.pressure;
+
+    return this.MapData(pressure, {
+      title,
+      icon,
+      unit,
+      normalRange,
+      criticalText
+    });
+  }
+
+  public static MapChartDataTemperature(temperature: { timeStamp: string; temperature: number; }[], isForecast: boolean = false) {
     const { title, chartColor } = config.temperature;
     const forecastColor = config.forecastColor;
 
     const labels = temperature.map((reading) => {
-      const date = new Date(reading.timestamp).toISOString().split("T")[1].split(".")[0];
+      const date = new Date(reading.timeStamp).toLocaleTimeString("de-CH", {
+        timeZone: "Europe/Zurich",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      });
       return date;
     });
 
     const dataset = new Dataset(
       title,
       temperature.map((reading) => {
-        return Number(reading.value);
+        return Number(reading.temperature);
       }),
       false,
       isForecast ? forecastColor : chartColor,
@@ -56,19 +90,24 @@ class GlobalHelper {
     return new ChartData(labels, [dataset]);
   }
 
-  public static MapChartDataHumidity(humidity: SensorData[], isForecast: boolean = false) {
+  public static MapChartDataHumidity(humidity: { timeStamp: string; humidity: number; }[], isForecast: boolean = false) {
     const { title, chartColor } = config.humidity;
     const forecastColor = config.forecastColor;
 
     const labels = humidity.map((reading) => {
-      const date = new Date(reading.timestamp).toISOString().split("T")[1].split(".")[0];
+      const date = new Date(reading.timeStamp).toLocaleTimeString("de-CH", {
+        timeZone: "Europe/Zurich",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      });
       return date;
     });
 
     const dataset = new Dataset(
       title,
       humidity.map((reading) => {
-        return Number(reading.value);
+        return Number(reading.humidity);
       }),
       false,
       isForecast ? forecastColor : chartColor,
@@ -78,19 +117,50 @@ class GlobalHelper {
     return new ChartData(labels, [dataset]);
   }
 
-  public static MapChartDataAirQuality(airQuality: SensorData[], isForecast: boolean = false) {
+  public static MapChartDataAirQuality(airQuality: { timeStamp: string; airQuality: number; }[], isForecast: boolean = false) {
     const { title, chartColor } = config.airQuality;
     const forecastColor = config.forecastColor;
 
     const labels = airQuality.map((reading) => {
-      const date = new Date(reading.timestamp).toISOString().split("T")[1].split(".")[0];
+      const date = new Date(reading.timeStamp).toLocaleTimeString("de-CH", {
+        timeZone: "Europe/Zurich",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      });
       return date;
     });
 
     const dataset = new Dataset(
       title,
       airQuality.map((reading) => {
-        return Number(reading.value);
+        return Number(reading.airQuality);
+      }),
+      false,
+      isForecast ? forecastColor : chartColor,
+      0.4
+    );
+
+    return new ChartData(labels, [dataset]);
+  }
+  public static MapChartDataPressure(pressure: { timeStamp: string; pressure: number; }[], isForecast: boolean = false) {
+    const { title, chartColor } = config.pressure;
+    const forecastColor = config.forecastColor;
+
+    const labels = pressure.map((reading) => {
+      const date = new Date(reading.timeStamp).toLocaleTimeString("de-CH", {
+        timeZone: "Europe/Zurich",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      });
+      return date;
+    });
+
+    const dataset = new Dataset(
+      title,
+      pressure.map((reading) => {
+        return Number(reading.pressure);
       }),
       false,
       isForecast ? forecastColor : chartColor,
@@ -103,21 +173,30 @@ class GlobalHelper {
   public static MapHistoryChartDataTemperature(history: any, room: any) {
     const { title, chartColor } = config.temperature;
 
-    const selectedRoom = history.find(historyRoom => historyRoom.id === room.id).environmentData.temperature;
+    const selectedRoom = history.find(historyRoom => historyRoom.roomId === room.id).environmentData.temperature;
 
     const labels = selectedRoom.map((reading) => {
-      const date = new Date(reading.timestamp).toISOString().split("T")[0];
+      const date = new Date(reading.timeStamp).toLocaleString("de-CH", {
+        timeZone: "Europe/Zurich",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      });
+
       return GlobalHelper.formatDateToDayMonth(date);
     });
 
     const dataset = new Dataset(
-        title,
-        selectedRoom.map((reading) => {
-          return Number(reading.value);
-        }),
-        false,
-        chartColor,
-        0
+      title,
+      selectedRoom.map((reading) => {
+        return Number(reading.value);
+      }),
+      false,
+      chartColor,
+      0
     );
 
     return new ChartData(labels, [dataset]);
@@ -127,21 +206,30 @@ class GlobalHelper {
     const { title, chartColor } = config.humidity;
 
     // Shouldn't be hardcoded :(
-    const selectedRoom = history.find(historyRoom => historyRoom.id === room.id).environmentData.humidity;
+    const selectedRoom = history.find(historyRoom => historyRoom.roomId === room.id).environmentData.humidity;
 
     const labels = selectedRoom.map((reading) => {
-      const date = new Date(reading.timestamp).toISOString().split("T")[0];
+      const date = new Date(reading.timeStamp).toLocaleString("de-CH", {
+        timeZone: "Europe/Zurich",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      });
+
       return GlobalHelper.formatDateToDayMonth(date);
     });
 
     const dataset = new Dataset(
-        title,
-        selectedRoom.map((reading) => {
-          return Number(reading.value);
-        }),
-        false,
-        chartColor,
-        0
+      title,
+      selectedRoom.map((reading) => {
+        return Number(reading.value);
+      }),
+      false,
+      chartColor,
+      0
     );
 
     return new ChartData(labels, [dataset]);
@@ -151,21 +239,30 @@ class GlobalHelper {
     const { title, chartColor } = config.airQuality;
 
     // Shouldn't be hardcoded :(
-    const selectedRoom = history.find(historyRoom => historyRoom.id === room.id).environmentData.airQuality;
+    const selectedRoom = history.find(historyRoom => historyRoom.roomId === room.id).environmentData.airQuality;
 
     const labels = selectedRoom.map((reading) => {
-      const date = new Date(reading.timestamp).toISOString().split("T")[0];
+      const date = new Date(reading.timeStamp).toLocaleString("de-CH", {
+        timeZone: "Europe/Zurich",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      });
+
       return GlobalHelper.formatDateToDayMonth(date);
     });
 
     const dataset = new Dataset(
-        title,
-        selectedRoom.map((reading) => {
-          return Number(reading.value);
-        }),
-        false,
-        chartColor,
-        0
+      title,
+      selectedRoom.map((reading) => {
+        return Number(reading.value);
+      }),
+      false,
+      chartColor,
+      0
     );
 
     return new ChartData(labels, [dataset]);

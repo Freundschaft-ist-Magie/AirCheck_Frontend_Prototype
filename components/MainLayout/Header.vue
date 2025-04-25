@@ -41,10 +41,35 @@ const panelLinks = computed(() => {
 
   return links;
 });
+
+const checkServerHealth = async () => {
+  try {
+    const response = await fetch(`http://${import.meta.env.VITE_API_URL}/healthz`);
+    if (response.ok) {
+      const text = await response.text();
+      isServerOnline.value = text.toLowerCase().includes("healthy");
+    } else {
+      isServerOnline.value = false;
+    }
+  } catch (error) {
+    isServerOnline.value = false;
+  }
+};
+
+onMounted(() => {
+  checkServerHealth();
+
+  setInterval(() => {
+    checkServerHealth();
+    console.log("Server health check executed");
+  }, 2 * 60 * 1000);
+});
 </script>
 
 <template>
-  <div class="bg-gray2 p-4 flex justify-between items-center rounded-md">
+  <div
+    class="bg-gray2 p-4 flex justify-between items-center rounded-md shadow-md shadow-black/40"
+  >
     <Button
       severity="secondary"
       class="p-0! m-0! bg-transparent! border-0!"
@@ -79,7 +104,7 @@ const panelLinks = computed(() => {
       </Popover>
 
       <div class="flex gap-2 items-center">
-        <Button
+        <!-- <Button
           severity="secondary"
           class="p-0! m-0! bg-transparent! border-0!"
           @click="toggleNavLinksPanel"
@@ -106,7 +131,22 @@ const panelLinks = computed(() => {
               <span>{{ link.text }}</span>
             </NuxtLink>
           </div>
-        </OverlayPanel>
+        </OverlayPanel> -->
+        <Button
+          severity="secondary"
+          class="p-0! m-0! bg-transparent! border-0!"
+          @click="toggleNavLinksPanel"
+          aria-haspopup="true"
+          aria-controls="navLinksPanel"
+        >
+          <NuxtLink
+            to="logout"
+            class="flex items-center gap-2 text-left hover:bg-gray1/60 px-4 py-2 rounded-md"
+          >
+            <Icon name="mdi-light:logout" class="w-5 h-5" />
+            <span>Logout</span>
+          </NuxtLink>
+        </Button>
       </div>
     </div>
   </div>

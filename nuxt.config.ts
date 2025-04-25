@@ -5,6 +5,7 @@ import Aura from '@primeuix/themes/aura';
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
+  ssr: false,
   modules: ['@primevue/nuxt-module', '@nuxt/icon', '@pinia/nuxt'],
 
   // https://tailwindcss.com/docs/installation/framework-guides/nuxt
@@ -36,6 +37,18 @@ export default defineNuxtConfig({
   routeRules: {
     '/login': {
       // Login page specific rules if needed
+    }
+  },
+
+  app: {
+    head: {
+      link: [
+        {
+          rel: 'icon',
+          type: 'image/x-icon',
+          href: '/favicon.svg'
+        }
+      ]
     }
   }
 })

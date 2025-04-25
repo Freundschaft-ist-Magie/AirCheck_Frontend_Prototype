@@ -2,7 +2,8 @@ import { useAuthStore } from "~/utils/stores/base/AuthStore";
 import { useToastStore } from "~/utils/stores/base/ToastStore";
 import StorageService from "./StorageService";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+const API_BASE_URL = "http://" + import.meta.env.VITE_API_URL + "/";
+const VITE_API_ENDPOINT_PREFIX = import.meta.env.VITE_API_ENDPOINT_PREFIX || "";
 
 const _makeApiCall = async (
   method: "GET" | "POST" | "PUT" | "DELETE",
@@ -15,7 +16,7 @@ const _makeApiCall = async (
   const toastStore = useToastStore();
 
   try {
-    const response = await $fetch(`${API_BASE_URL}${endpoint}`, {
+    const response = await $fetch(`${API_BASE_URL}${VITE_API_ENDPOINT_PREFIX}${endpoint}`, {
       method,
       body: data ? JSON.stringify(data) : undefined,
       query: params || undefined,
@@ -52,7 +53,11 @@ const _makeApiCall = async (
     }
 
     console.error("Error in API call:", error);
-    toastStore.setToast("Fehler beim Verbinden zum Server.", "danger");
+    toastStore.setToast(
+      "error",
+      "Fehler",
+      "Fehler beim Verbinden zum Server."
+    );
     throw error;
   }
 };
