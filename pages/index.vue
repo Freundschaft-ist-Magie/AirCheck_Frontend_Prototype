@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useLoadingStore } from "@/utils/stores/base/LoadingStore";
-import { useRoomsStore } from "~/utils/stores/RoomsStore";
+import { useRoomStore } from "~/utils/stores/RoomStore";
 import RoomsService from "~/utils/services/RoomsService";
 import Room from "~/models/Room";
 import GlobalHelper from "~/utils/helper/GlobalHelper";
@@ -10,7 +10,7 @@ import ChartOptions from "~/models/ChartOptions";
 import { getConfig } from "~/utils/helper/ConfigLoader";
 
 const loadingStore = useLoadingStore();
-const roomsStore = useRoomsStore();
+const roomsStore = useRoomStore();
 
 const latestFetch = ref(new Date());
 const selectedRoom = ref<Room | null>(null);
