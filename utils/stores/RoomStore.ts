@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia';
 import { get } from "~/utils/services/base/ApiService";
-import type Room from "~/models/Room";
+import Room from "~/models/Room";
 
-export const useRoomsStore = defineStore("rooms", () => {
-  const _roomBaseUrl = "RoomDatas";
+export const useRoomStore = defineStore("room", () => {
+  const _roomBaseUrl = "Rooms";
   const _rooms = ref([])
   const rooms = computed(() => _rooms);
 

@@ -49,7 +49,7 @@ onMounted(() => {
       :optionLabel="filterField"
       :placeholder="placeholder"
       size="large"
-      class="w-full md:w-56 bg-white! border-0! shadow-none!"
+      class="w-full md:w-sm bg-white! border-0! shadow-none!"
   >
     <template #value="slotProps">
       <div v-if="slotProps.value" class="flex items-center">
