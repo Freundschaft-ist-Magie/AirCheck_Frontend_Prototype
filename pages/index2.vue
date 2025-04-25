@@ -6,6 +6,7 @@ import ChartData from "~/models/ChartData";
 import ChartOptions from "~/models/ChartOptions";
 import { useRoomDataStore } from "~/utils/stores/RoomDataStore";
 import { useRoomStore } from "~/utils/stores/RoomStore";
+import SocketService from "~/utils/services/base/SocketService";
 import RoomData from "~/models/RoomData";
 
 // ----- STORE INTEGRATION -----
@@ -33,6 +34,11 @@ interface ProcessedHistoryEntry {
 }
 
 // ----- COMPONENT LOGIC -----
+
+const socketService = new SocketService();
+let currentWsEndpoint: string | null = null;
+type MessageCallback = (data: any) => void;
+let currentWsCallback: MessageCallback | null = null;
 
 const latestFetch = ref<Date>(new Date(1, 1, 1970));
 const selectedRoom = ref<DisplayRoom | null>(null);
@@ -116,6 +122,113 @@ function processFetchedData(allRoomData: RoomData[]) {
   latestFetch.value = new Date();
 }
 
+// ----- WebSocket -----
+/**
+ * Processes a new RoomData object received via WebSocket.
+ * Updates component state and triggers UI refreshes efficiently.
+ */
+function handleWebSocketMessage(newData: RoomData) {
+  if (!selectedRoom.value || String(newData.roomId) !== selectedRoom.value.roomId) {
+    console.warn(
+      `[WS] Received data for room ${newData.roomId}, but room ${selectedRoom.value?.roomId} is selected. Ignoring.`
+    );
+    return;
+  }
+
+  console.log(`[WS] Received data for selected room ${newData.roomId}:`, newData);
+  latestFetch.value = new Date();
+
+  const roomIdStr = String(newData.roomId);
+
+  // 1. Update the 'rooms' array (for RoomSelectorCard display)
+  const roomIndex = rooms.value.findIndex((r) => r.roomId === roomIdStr);
+  if (roomIndex !== -1) {
+    const updatedDisplayRoom: DisplayRoom = {
+      ...rooms.value[roomIndex],
+      temperature: newData.temperature,
+      humidity: newData.humidity,
+      pressure: newData.pressure,
+      gas: newData.gas,
+      timeStamp: newData.timeStamp,
+    };
+    rooms.value.splice(roomIndex, 1, updatedDisplayRoom);
+
+    // Also update the properties of the selectedRoom ref directly.
+    // This is what cards and potentially other parts of the UI bind to.
+    selectedRoom.value.temperature = newData.temperature;
+    selectedRoom.value.humidity = newData.humidity;
+    selectedRoom.value.pressure = newData.pressure;
+    selectedRoom.value.gas = newData.gas;
+    selectedRoom.value.timeStamp = newData.timeStamp;
+  } else {
+    console.warn(
+      `[WS] Received data for room ${roomIdStr}, but it's not in the 'rooms' list.`
+    );
+  }
+
+  // 2. Add new data point to history
+  const historyEntry: ProcessedHistoryEntry = {
+    timeStamp: newData.timeStamp,
+    temperature: newData.temperature,
+    humidity: newData.humidity,
+    pressure: newData.pressure,
+    airQuality: newData.gas,
+  };
+  if (!roomsHistory.value[roomIdStr]) {
+    roomsHistory.value[roomIdStr] = [];
+  }
+  roomsHistory.value[roomIdStr].push(historyEntry);
+  // Optional: Limit history size in memory
+  // const MAX_HISTORY_POINTS = 500;
+  // if (roomsHistory.value[roomIdStr].length > MAX_HISTORY_POINTS) {
+  //   roomsHistory.value[roomIdStr].shift(); // Remove the oldest point
+  // }
+
+  setCards();
+  updateChartsWithNewData(newData);
+}
+
+/**
+ * Updates the existing chart data arrays instead of rebuilding them completely.
+ */
+function updateChartsWithNewData(newData: RoomData) {
+  if (
+    charts.value.length !== 4 ||
+    !selectedRoom.value ||
+    String(newData.roomId) !== selectedRoom.value.roomId
+  ) {
+    console.warn(
+      "[WS] Chart structure not ready or data for wrong room. Skipping direct chart update."
+    );
+
+    return;
+  }
+
+  const newLabel = new Date(newData.timeStamp).toLocaleTimeString();
+
+  const pushData = (chartIndex: number, label: string, value: number) => {
+    const chart = charts.value[chartIndex];
+    if (chart?.data?.labels && chart?.data?.datasets?.[0]?.data) {
+      chart.data.labels.push(label);
+      chart.data.datasets[0].data.push(value);
+
+      // Optional: Limit chart points visible for performance
+      // const MAX_CHART_POINTS = 100;
+      // if (chart.data.labels.length > MAX_CHART_POINTS) {
+      //     chart.data.labels.shift();
+      //     chart.data.datasets[0].data.shift();
+      // }
+    } else {
+      console.warn(`[WS] Cannot update chart ${chartIndex}, data structure invalid.`);
+    }
+  };
+
+  pushData(0, newLabel, newData.temperature);
+  pushData(1, newLabel, newData.humidity);
+  pushData(2, newLabel, newData.gas);
+  pushData(3, newLabel, newData.pressure);
+}
+
 // ----- UI UPDATE FUNCTIONS -----
 
 function setCards() {
@@ -135,16 +248,21 @@ function setCards() {
   }
 }
 
-function setCharts() {
+function initializeCharts() {
   charts.value = [];
   if (!selectedRoom.value?.roomId) return;
 
   const roomId = selectedRoom.value.roomId;
-  // Use the processed history data directly
   const historyForSelected = roomsHistory.value[roomId] ?? [];
 
   if (historyForSelected.length > 0) {
-    console.log("Setting charts for room:", roomId);
+    console.log(
+      "Initializing charts for room:",
+      roomId,
+      "with",
+      historyForSelected.length,
+      "history points"
+    );
 
     const temperatureData = GlobalHelper.MapChartDataTemperature(historyForSelected);
     const humidityData = GlobalHelper.MapChartDataHumidity(historyForSelected);
@@ -159,9 +277,21 @@ function setCharts() {
       { data: airQualityData, options: chartOptions },
       { data: pressureData, options: chartOptions }
     );
-    console.log("Charts set with data points:", historyForSelected.length);
   } else {
-    console.log("No history data to set charts for room:", roomId);
+    console.log("No history data to initialize charts for room:", roomId);
+
+    const emptyChartData = (): ChartData => ({
+      labels: [],
+      datasets: [{ label: "", data: [] as Array }],
+    });
+    const chartOptions = new ChartOptions();
+    charts.value.push(
+      { data: emptyChartData(), options: chartOptions },
+      { data: emptyChartData(), options: chartOptions },
+      { data: emptyChartData(), options: chartOptions },
+      { data: emptyChartData(), options: chartOptions }
+    );
+    console.log("Initialized empty chart structures for room:", roomId);
   }
 }
 
@@ -175,46 +305,72 @@ onMounted(async () => {
   roomsHistory.value = {};
 
   try {
-    // Fetch all room data points first (this contains all necessary info)
-    // Note: We don't strictly need roomStore.GetAll() for this approach
-    // unless Room model contains info not in RoomData (like room name, location etc.)
-    // If Room has essential details (e.g. Name), fetch both:
-    // const [rawRooms, rawRoomData] = await Promise.all([
-    //     roomStore.GetAll(), // Assuming this gives Room[]
-    //     roomDataStore.GetAll() // Assuming this gives RoomData[]
-    // ]);
-    // If RoomData.roomId is sufficient, just fetch RoomData:
     const rawRoomData = await roomDataStore.GetAll();
 
     if (!rawRoomData || rawRoomData.length === 0) {
       console.warn("No room data received from the store.");
-      // Keep loading false, show "No Rooms" message
     } else {
       console.log(`Fetched ${rawRoomData.length} data points.`);
       processFetchedData(rawRoomData);
 
-      // Select the first room by default if available
-      if (rooms.value.length > 0) {
+      if (hasRooms.value) {
         selectedRoom.value = rooms.value[0];
         setCards();
-        setCharts();
+        initializeCharts();
         console.log("Default room selected:", selectedRoom.value.roomId);
+
+        subscribeToRoom(selectedRoom.value.roomId);
       } else {
         console.log("No displayable rooms after processing data.");
       }
     }
   } catch (error) {
     console.error("Failed to fetch or process initial room data:", error);
-    rooms.value = []; // Ensure empty state on error
+    rooms.value = [];
     roomsHistory.value = {};
   } finally {
     loadingStore.setLoading(false);
-    console.log(
-      "Initial data fetch attempt complete. Loading state:",
-      loadingStore.isLoading
-    );
+    console.log("Initial data fetch attempt complete.");
   }
 });
+
+// ----- WebSocket Subscription -----
+
+function subscribeToRoom(roomId: string) {
+  const newEndpoint = `${import.meta.env.VITE_API_URL}/api/roomDatas/${roomId}/ws`;
+
+  unsubscribeFromCurrentRoom();
+
+  currentWsCallback = (data: any) => {
+    if (typeof data === "object" && data !== null && "roomId" in data) {
+      const roomData = new RoomData(
+        data.id ?? 0,
+        data.humidity ?? 0,
+        data.temperature ?? 0,
+        data.pressure ?? 0,
+        data.gas ?? 0,
+        data.timeStamp ?? new Date().toISOString(),
+        data.roomId ?? 0
+      );
+      handleWebSocketMessage(roomData);
+    } else {
+      console.warn("[WS] Received unexpected data format:", data);
+    }
+  };
+
+  console.log(`[WS] Subscribing to ${newEndpoint}`);
+  socketService.subscribe(newEndpoint, currentWsCallback);
+  currentWsEndpoint = newEndpoint;
+}
+
+function unsubscribeFromCurrentRoom() {
+  if (currentWsEndpoint && currentWsCallback) {
+    console.log(`[WS] Unsubscribing from ${currentWsEndpoint}`);
+    socketService.unsubscribe(currentWsEndpoint, currentWsCallback);
+    currentWsEndpoint = null;
+    currentWsCallback = null;
+  }
+}
 
 // ----- EVENT HANDLERS -----
 
@@ -231,15 +387,30 @@ function roomSelected(room: DisplayRoom) {
 watch(
   selectedRoom,
   (newRoom, oldRoom) => {
-    // Update only if the room changed or went from null to selected/vice-versa
     if (newRoom?.roomId !== oldRoom?.roomId) {
-      console.log("Selected room changed via watcher, updating cards and charts...");
+      console.log(`Selected room changed from ${oldRoom?.roomId} to ${newRoom?.roomId}`);
+
+      // 1. Unsubscribe from the old room's WebSocket stream
+      unsubscribeFromCurrentRoom();
+
+      // 2. Update Cards and (re)initialize Charts for the new room
       setCards();
-      setCharts();
+      initializeCharts();
+
+      // 3. Subscribe to the new room's WebSocket stream if a new room is selected
+      if (newRoom) {
+        subscribeToRoom(newRoom.roomId);
+      }
     }
   },
   { immediate: false }
 ); // Don't run immediately, onMounted handles initial setup
+
+// ----- Cleanup on Component Unmount -----
+onUnmounted(() => {
+  console.log("[WS] Component unmounting. Cleaning up WebSocket subscriptions.");
+  unsubscribeFromCurrentRoom();
+});
 </script>
 
 <template>
