@@ -337,7 +337,7 @@ onMounted(async () => {
 // ----- WebSocket Subscription -----
 
 function subscribeToRoom(roomId: string) {
-  const newEndpoint = `${import.meta.env.VITE_API_URL}/api/roomDatas/${roomId}/ws`;
+  const newEndpoint = `/api/RoomDatas/ws/${roomId}`;
 
   unsubscribeFromCurrentRoom();
 
@@ -390,16 +390,16 @@ watch(
     if (newRoom?.roomId !== oldRoom?.roomId) {
       console.log(`Selected room changed from ${oldRoom?.roomId} to ${newRoom?.roomId}`);
 
-      // 1. Unsubscribe from the old room's WebSocket stream
+      // Unsubscribe happens inside subscribeToRoom, but calling it here for clarity
       unsubscribeFromCurrentRoom();
 
-      // 2. Update Cards and (re)initialize Charts for the new room
       setCards();
       initializeCharts();
 
-      // 3. Subscribe to the new room's WebSocket stream if a new room is selected
       if (newRoom) {
         subscribeToRoom(newRoom.roomId);
+      } else {
+        unsubscribeFromCurrentRoom();
       }
     }
   },
