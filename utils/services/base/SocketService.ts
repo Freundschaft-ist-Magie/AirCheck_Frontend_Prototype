@@ -103,6 +103,8 @@ class SocketService {
         const data = JSON.parse(event.data);
         // Use a copy of the listeners set in case a callback modifies the original set during iteration
         new Set(this.sockets[endpoint].listeners).forEach((cb) => cb(data));
+
+        console.log(`[WS] Message received from ${endpoint}:`, data);
       } catch (e) {
         console.error(`[WS] Failed to parse message from ${endpoint}:`, event.data, e);
       }
