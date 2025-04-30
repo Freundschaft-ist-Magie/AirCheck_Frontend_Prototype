@@ -337,7 +337,7 @@ onMounted(async () => {
 // ----- WebSocket Subscription -----
 
 function subscribeToRoom(roomId: string) {
-  const newEndpoint = `/api/RoomDatas/ws/${roomId}`;
+  const newEndpoint = `/RoomDatas/ws/${roomId}`;
 
   unsubscribeFromCurrentRoom();
 

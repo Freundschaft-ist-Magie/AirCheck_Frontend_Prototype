@@ -40,7 +40,7 @@ class SocketService {
     const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
     const path = cleanPrefix ? `${cleanPrefix}${cleanEndpoint}` : cleanEndpoint;
 
-    const fullUrl = `${protocol}${host}${path}`;
+    const fullUrl = `${protocol}${host}/${path}`;
     console.log(`[WS] Constructed URL: ${fullUrl} for endpoint: ${endpoint}`);
     return fullUrl;
   }
