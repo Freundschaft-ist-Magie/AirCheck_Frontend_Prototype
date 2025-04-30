@@ -342,20 +342,42 @@ function subscribeToRoom(roomId: string) {
   unsubscribeFromCurrentRoom();
 
   currentWsCallback = (data: any) => {
-    if (typeof data === "object" && data !== null && "roomId" in data) {
-      const roomData = new RoomData(
-        data.id ?? 0,
-        data.humidity ?? 0,
-        data.temperature ?? 0,
-        data.pressure ?? 0,
-        data.gas ?? 0,
-        data.timeStamp ?? new Date().toISOString(),
-        data.roomId ?? 0
-      );
-      handleWebSocketMessage(roomData);
-    } else {
-      console.warn("[WS] Received unexpected data format:", data);
+    if (!data || typeof data !== "object") {
+      console.warn("[WS] Invalid data received:", data);
+      return;
     }
+
+    // Validate required fields exist and are of correct type
+    const requiredFields = {
+      id: "number",
+      humidity: "number",
+      temperature: "number",
+      pressure: "number",
+      gas: "number",
+      timeStamp: "string",
+      roomId: "number",
+    };
+
+    const isValid = Object.entries(requiredFields).every(
+      ([field, type]) => field in data && typeof data[field] === type
+    );
+
+    if (!isValid) {
+      console.warn("[WS] Data missing required fields or invalid types:", data);
+      return;
+    }
+
+    const roomData = new RoomData(
+      data.id,
+      data.humidity,
+      data.temperature,
+      data.pressure,
+      data.gas,
+      data.timeStamp,
+      data.roomId
+    );
+
+    handleWebSocketMessage(roomData);
   };
 
   console.log(`[WS] Subscribing to ${newEndpoint}`);
