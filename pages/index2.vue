@@ -128,6 +128,10 @@ function processFetchedData(allRoomData: RoomData[]) {
  * Updates component state and triggers UI refreshes efficiently.
  */
 function handleWebSocketMessage(newData: RoomData) {
+  // DEBUG-Test
+  console.log(`[WS] Received data for room ${newData.roomId}:`, newData);
+  console.log("Selected room:", selectedRoom.value?.roomId);
+
   if (!selectedRoom.value || String(newData.roomId) !== selectedRoom.value.roomId) {
     console.warn(
       `[WS] Received data for room ${newData.roomId}, but room ${selectedRoom.value?.roomId} is selected. Ignoring.`
